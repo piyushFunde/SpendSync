@@ -1,29 +1,27 @@
-# ⚡ SpendSync — Personal Finance Tracker
+# SpendSync — Personal Finance Tracker
 
 > A full-stack personal finance tracker with stunning dark UI, JWT authentication, interactive charts, and smart analytics.
 
-![SpendSync Dashboard](https://img.shields.io/badge/Status-Active-brightgreen) ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2-6DB33F?logo=springboot) ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb) ![License](https://img.shields.io/badge/License-MIT-purple)
-
 ---
 
-## 🎯 Features
+##  Features
 
 | Feature | Description |
 |---|---|
-| 🔐 **JWT Authentication** | Secure register/login with bcrypt hashing |
-| 💰 **Transaction CRUD** | Add, edit, delete income & expense transactions |
-| 📊 **Interactive Charts** | Bar, Area, Pie charts powered by Recharts |
-| 🔍 **Advanced Filters** | Filter by type, category, and date range |
-| 📤 **CSV Export** | Download transactions as CSV |
-| 📧 **Monthly Reports** | Automated email summaries via Nodemailer |
-| 📱 **PWA Support** | Installable on mobile as a native-like app |
-| 🎨 **Premium Dark UI** | Glassmorphism, animations, responsive design |
-| ♻️ **Recurring Transactions** | Mark transactions as daily/weekly/monthly |
-| 📈 **Analytics Page** | Savings rate, spending breakdown, trends |
+| **JWT Authentication** | Secure register/login with bcrypt hashing |
+| **Transaction CRUD** | Add, edit, delete income & expense transactions |
+|  **Interactive Charts** | Bar, Area, Pie charts powered by Recharts |
+|  **Advanced Filters** | Filter by type, category, and date range |
+|  **CSV Export** | Download transactions as CSV |
+|  **Monthly Reports** | Automated email summaries via Nodemailer |
+|  **PWA Support** | Installable on mobile as a native-like app |
+|  **Premium Dark UI** | Glassmorphism, animations, responsive design |
+|  **Recurring Transactions** | Mark transactions as daily/weekly/monthly |
+|  **Analytics Page** | Savings rate, spending breakdown, trends |
 
 ---
 
-## 🧰 Tech Stack
+##  Tech Stack
 
 ```
 Frontend:        React 18 + Vite + Tailwind CSS v4
@@ -43,7 +41,7 @@ Build:           Maven
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -103,7 +101,7 @@ The app will start on `http://localhost:5173`
 | POST | `/api/auth/register` | Create new account |
 | POST | `/api/auth/login` | Login & get JWT token |
 
-### Transactions (🔒 JWT Required)
+### Transactions ( JWT Required)
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/transactions` | List transactions (with filters) |
@@ -122,7 +120,7 @@ The app will start on `http://localhost:5173`
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 SpendSync/
@@ -208,23 +206,19 @@ SpendSync/
 
 ---
 
-## 🔑 Key Industry Concepts Demonstrated
+##  Key Industry Concepts Demonstrated
 
-- ✅ JWT Authentication & Authorization
-- ✅ RESTful API Design (controller/service/repository pattern)
-- ✅ MongoDB data modeling with Spring Data
-- ✅ Global exception handling with structured error responses
-- ✅ Zustand state management with persistence
-- ✅ Protected routes in React Router
-- ✅ Axios interceptors for token injection
-- ✅ Data visualization with Recharts
-- ✅ Responsive mobile-first UI
-- ✅ PWA with install prompt
-- ✅ CSV export from backend streaming
-- ✅ Scheduled tasks with Spring @Scheduled
+- JWT Authentication & Authorization
+-  RESTful API Design (controller/service/repository pattern)
+-  MongoDB data modeling with Spring Data
+-  Global exception handling with structured error responses
+-  Zustand state management with persistence
+-  Protected routes in React Router
+-  Axios interceptors for token injection
+-  Data visualization with Recharts
+-  Responsive mobile-first UI
+-  PW with install prompt
+-  CSV export from backend streaming
+- Scheduled tasks with Spring @Scheduled
 
 ---
-
-## 📄 License
-
-MIT License © 2024 SpendSync
