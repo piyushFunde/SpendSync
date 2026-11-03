@@ -1,0 +1,22 @@
+unit: monthly-report-job
+side_effects:
+  - source_loc: "server/src/main/java/com/spendsync/api/service/EmailReportService.java:31"
+    effect: "On scheduled run, read all users, aggregate each user's preceding-month income, expenses and net, then send an HTML email."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/service/EmailReportService.java:43"
+    effect: "Log report start, successful delivery and per-user delivery failures."
+    must_preserve: true
+branches:
+  - source_loc: "server/src/main/java/com/spendsync/api/service/EmailReportService.java:35"
+    condition: "Sending a report for one user throws an exception"
+    behavior: "Log the failure and continue processing the remaining users."
+    must_preserve: true
+error_paths:
+  - source_loc: "server/src/main/java/com/spendsync/api/service/EmailReportService.java:35"
+    trigger: "A user's monthly report send fails"
+    outcome: "Log error containing the user's email and exception message; continue loop."
+    contract: "No HTTP response; scheduled job continues to next user."
+    must_preserve: true
+concurrency:
+  model: sync
+  tx_boundary: null

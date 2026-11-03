@@ -1,0 +1,46 @@
+unit: transaction-api
+side_effects:
+  - source_loc: "server/src/main/java/com/spendsync/api/service/TransactionService.java:24"
+    effect: "Create validates user existence, associates transaction to that user, persists it and returns a response DTO."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/service/TransactionService.java:73"
+    effect: "Update persists supplied transaction fields after ownership check."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/service/TransactionService.java:88"
+    effect: "Delete removes the transaction after ownership check."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:89"
+    effect: "CSV endpoint creates and returns a downloadable CSV with a fixed header row."
+    must_preserve: true
+branches:
+  - source_loc: "server/src/main/java/com/spendsync/api/service/TransactionService.java:39"
+    condition: "Both startDate and endDate are supplied"
+    behavior: "Use the date-range repository query; otherwise load all user transactions and apply optional type/category filters."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/service/TransactionService.java:54"
+    condition: "Transaction is absent or belongs to a different user"
+    behavior: "Return not-found or access-denied domain error."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/service/TransactionService.java:113"
+    condition: "Dashboard summary is computed"
+    behavior: "Aggregate totals and categories over all user transactions; include six months and five most recent transactions."
+    must_preserve: true
+error_paths:
+  - source_loc: "server/src/main/java/com/spendsync/api/exception/GlobalExceptionHandler.java:24"
+    trigger: "Transaction does not exist"
+    outcome: "HTTP 404 with structured ErrorResponse."
+    contract: "ErrorResponse contains timestamp, status, error and message."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/exception/GlobalExceptionHandler.java:19"
+    trigger: "Transaction belongs to another user"
+    outcome: "HTTP 400 with Access denied message."
+    contract: "HTTP 400 structured ErrorResponse."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/exception/GlobalExceptionHandler.java:31"
+    trigger: "Request bean validation fails"
+    outcome: "HTTP 400 with field-level validationErrors."
+    contract: "ErrorResponse contains timestamp, status, error, message and validationErrors."
+    must_preserve: true
+concurrency:
+  model: sync
+  tx_boundary: null

@@ -1,0 +1,153 @@
+contracts:
+  - name: "Account registration"
+    unit: auth-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/AuthController.java:20"
+    contract:
+      method: "POST"
+      path: /api/auth/register
+      request: "RegisterRequest: name, email, password, currency"
+      response: "201 AuthResponse: token, type, id, name, email, avatarColor, currency"
+      error: "400 structured error for validation or duplicate email; unhandled errors map to generic 500"
+      auth: "Public"
+    target_contract:
+      method: "POST /api/auth/register -> 201 AuthResponse"
+      notes: "Records the current contract; no future target framework was specified."
+    semantic_divergence: []
+
+  - name: "Account login"
+    unit: auth-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/AuthController.java:25"
+    contract:
+      method: "POST"
+      path: /api/auth/login
+      request: "LoginRequest: email, password"
+      response: "200 AuthResponse: token, type, id, name, email, avatarColor, currency"
+      error: "401 structured error for bad credentials; 400 for request validation"
+      auth: "Public"
+    target_contract:
+      method: "POST /api/auth/login -> 200 AuthResponse"
+      notes: "Records the current contract; no future target framework was specified."
+    semantic_divergence: []
+
+  - name: "Create transaction"
+    unit: transaction-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:41"
+    contract:
+      method: "POST"
+      path: /api/transactions
+      request: "TransactionRequest: type, category, amount, description, notes, date, recurring, recurringFrequency"
+      response: "201 TransactionResponse"
+      error: "400 validation error; 401 if unauthenticated; 404 if authenticated user ID is absent"
+      auth: "Bearer JWT; transaction is associated with authenticated user"
+    target_contract:
+      method: "POST /api/transactions(TransactionRequest) -> 201 TransactionResponse"
+      notes: "Records the current contract; no future target framework was specified."
+    semantic_divergence: []
+
+  - name: "List and filter transactions"
+    unit: transaction-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:49"
+    contract:
+      method: "GET"
+      path: /api/transactions
+      request: "Optional query parameters type, category, startDate, endDate; dates use ISO yyyy-MM-dd"
+      response: "200 List<TransactionResponse>, newest date first"
+      error: "401 if unauthenticated"
+      auth: "Bearer JWT; results are scoped to authenticated user"
+    target_contract:
+      method: "GET /api/transactions(type?, category?, startDate?, endDate?) -> List<TransactionResponse>"
+      notes: "Date-range repository query is used only when both dates are supplied; type/category filtering is applied in the service."
+    semantic_divergence: []
+
+  - name: "Read transaction by ID"
+    unit: transaction-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:60"
+    contract:
+      method: "GET"
+      path: /api/transactions/{id}
+      request: "Path variable id"
+      response: "200 TransactionResponse"
+      error: "404 when missing; 400 Access denied when owned by another user; 401 if unauthenticated"
+      auth: "Bearer JWT"
+    target_contract:
+      method: "GET /api/transactions/{id} -> TransactionResponse"
+      notes: "Records the current contract; no future target framework was specified."
+    semantic_divergence: []
+
+  - name: "Update transaction"
+    unit: transaction-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:67"
+    contract:
+      method: "PUT"
+      path: /api/transactions/{id}
+      request: "Path variable id and TransactionRequest"
+      response: "200 TransactionResponse"
+      error: "400 validation/ownership error; 404 when missing; 401 if unauthenticated"
+      auth: "Bearer JWT"
+    target_contract:
+      method: "PUT /api/transactions/{id}(TransactionRequest) -> TransactionResponse"
+      notes: "Records the current contract; no future target framework was specified."
+    semantic_divergence: []
+
+  - name: "Delete transaction"
+    unit: transaction-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:75"
+    contract:
+      method: "DELETE"
+      path: /api/transactions/{id}
+      request: "Path variable id"
+      response: "204 No Content"
+      error: "400 ownership error; 404 when missing; 401 if unauthenticated"
+      auth: "Bearer JWT"
+    target_contract:
+      method: "DELETE /api/transactions/{id} -> 204"
+      notes: "Records the current contract; no future target framework was specified."
+    semantic_divergence: []
+
+  - name: "Dashboard summary"
+    unit: transaction-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:83"
+    contract:
+      method: "GET"
+      path: /api/transactions/dashboard
+      request: "No request body"
+      response: "200 DashboardSummaryResponse with income/expense totals, balance, count, category totals, six monthly points, five recent transactions"
+      error: "401 if unauthenticated"
+      auth: "Bearer JWT"
+    target_contract:
+      method: "GET /api/transactions/dashboard -> DashboardSummaryResponse"
+      notes: "Summary is computed from all transactions for the authenticated user."
+    semantic_divergence: []
+
+  - name: "CSV transaction export"
+    unit: transaction-api
+    type: rest
+    stability: must_preserve
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:89"
+    contract:
+      method: "GET"
+      path: /api/transactions/export/csv
+      request: "Optional type, startDate, endDate query parameters"
+      response: "200 text/csv attachment named spendsync-transactions.csv; header columns ID, Date, Type, Category, Amount, Description, Notes"
+      error: "401 if unauthenticated; CSV generation exceptions map through global handler"
+      auth: "Bearer JWT"
+    target_contract:
+      method: "GET /api/transactions/export/csv(type?, startDate?, endDate?) -> text/csv attachment"
+      notes: "Records the current contract; no future target framework was specified."
+    semantic_divergence: []

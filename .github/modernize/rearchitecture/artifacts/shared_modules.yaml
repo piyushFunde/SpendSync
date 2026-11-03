@@ -1,0 +1,308 @@
+modules:
+  - name: browser-route-config
+    kind: config
+    source_loc: "client/src/App.jsx:97"
+    used_by_units: [landing-page, login-page, register-page, dashboard-page, transactions-page, analytics-page, settings-page]
+    fields:
+      - name: route_definitions
+        type: "React Router route table for seven declared page routes plus wildcard redirect"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Shared routing and protected authenticated layout entry."
+
+  - name: auth-store
+    kind: store
+    source_loc: "client/src/store/authStore.js:14"
+    used_by_units: [login-page, register-page, dashboard-page, transactions-page, analytics-page, settings-page]
+    fields:
+      - name: user
+        type: "nullable user object: id, name, email, avatarColor, currency, optional isDemo"
+      - name: token
+        type: "nullable JWT string"
+      - name: isAuthenticated
+        type: boolean
+      - name: isLoading
+        type: boolean
+      - name: login
+        type: "(credentials) -> Promise<{success, error?}>"
+      - name: loginDemo
+        type: "() -> {success}"
+      - name: register
+        type: "(userData) -> Promise<{success, error?}>"
+      - name: updateUserPreferences
+        type: "(prefs) -> void"
+      - name: logout
+        type: "() -> void"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Zustand persist middleware stores user, token and authentication state under spendsync-auth."
+
+  - name: transaction-store
+    kind: store
+    source_loc: "client/src/store/transactionStore.js:207"
+    used_by_units: [dashboard-page, transactions-page, analytics-page]
+    fields:
+      - name: transactions
+        type: "TransactionResponse[]"
+      - name: dashboard
+        type: "nullable dashboard summary"
+      - name: filters
+        type: "{type, category, startDate, endDate}"
+      - name: setFilters
+        type: "(filters) -> void"
+      - name: resetFilters
+        type: "() -> void"
+      - name: fetchTransactions
+        type: "() -> Promise<void>"
+      - name: fetchDashboard
+        type: "() -> Promise<void>"
+      - name: addTransaction
+        type: "(transactionData) -> Promise<result>"
+      - name: updateTransaction
+        type: "(id, transactionData) -> Promise<result>"
+      - name: deleteTransaction
+        type: "(id) -> Promise<result>"
+      - name: exportCsv
+        type: "() -> Promise<result>"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Coordinates remote transaction calls and local demo-mode fallback state."
+
+  - name: axios-api-client
+    kind: utility
+    source_loc: "client/src/api/client.js:3"
+    used_by_units: [login-page, register-page, dashboard-page, transactions-page, analytics-page]
+    fields:
+      - name: authApi
+        type: "{register(data), login(data)}"
+      - name: transactionsApi
+        type: "{getAll, getById, create, update, delete, getDashboard, exportCsv}"
+      - name: token_request_interceptor
+        type: "reads localStorage token and sets Authorization bearer header"
+      - name: unauthorized_response_interceptor
+        type: "clears local token/user keys and redirects to /login on HTTP 401"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Axios base URL is /api."
+
+  - name: frontend-formatting
+    kind: utility
+    source_loc: "client/src/utils/constants.js:1"
+    used_by_units: [register-page, dashboard-page, transactions-page, analytics-page, settings-page]
+    fields:
+      - name: EXPENSE_CATEGORIES
+        type: "expense category definitions"
+      - name: INCOME_CATEGORIES
+        type: "income category definitions"
+      - name: CURRENCIES
+        type: "currency definitions"
+      - name: formatCurrency
+        type: "(amount, currencyCode?) -> string"
+      - name: formatDate
+        type: "(dateString) -> string"
+      - name: formatRelativeDate
+        type: "(dateString) -> string"
+      - name: CHART_COLORS
+        type: "string[]"
+      - name: getCategoryByLabel
+        type: "(label) -> category definition"
+      - name: getInitials
+        type: "(name?) -> string"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Shared constants and presentation helpers."
+
+  - name: pdf-export
+    kind: utility
+    source_loc: "client/src/utils/pdfExport.js:1"
+    used_by_units: [transactions-page, analytics-page]
+    fields:
+      - name: generateFinancialStatementPdf
+        type: "({user, transactions, dashboard}) -> downloads PDF"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Uses jsPDF and jspdf-autotable."
+
+  - name: transaction-modal
+    kind: utility
+    source_loc: "client/src/components/TransactionModal.jsx:12"
+    used_by_units: [dashboard-page, transactions-page]
+    fields:
+      - name: modal_form
+        type: "add/edit income or expense form with validation and recurring metadata"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Calls shared transaction-store create/update actions."
+
+  - name: transaction-item
+    kind: utility
+    source_loc: "client/src/components/TransactionItem.jsx:1"
+    used_by_units: [dashboard-page, transactions-page]
+    fields:
+      - name: transaction_row
+        type: "transaction display row with store-backed actions"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Shared row rendering and item-level transaction actions."
+
+  - name: user-repository
+    kind: utility
+    source_loc: "server/src/main/java/com/spendsync/api/repository/UserRepository.java:9"
+    used_by_units: [auth-api, transaction-api, monthly-report-job]
+    fields:
+      - name: findByEmail
+        type: "Optional<User> findByEmail(String)"
+      - name: existsByEmail
+        type: "boolean existsByEmail(String)"
+      - name: existsById
+        type: "boolean existsById(String)"
+      - name: findAll
+        type: "List<User> findAll()"
+      - name: save
+        type: "User save(User)"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Spring Data MongoRepository implementation."
+
+  - name: transaction-repository
+    kind: utility
+    source_loc: "server/src/main/java/com/spendsync/api/repository/TransactionRepository.java:11"
+    used_by_units: [transaction-api, monthly-report-job]
+    fields:
+      - name: findByUserIdOrderByDateDesc
+        type: "List<Transaction>(String)"
+      - name: findByUserIdAndType
+        type: "List<Transaction>(String, TransactionType)"
+      - name: findByUserIdAndCategory
+        type: "List<Transaction>(String, String)"
+      - name: findByUserIdAndDateBetweenOrderByDateDesc
+        type: "List<Transaction>(String, LocalDate, LocalDate)"
+      - name: findByUserIdAndTypeAndDateBetween
+        type: "List<Transaction>(String, TransactionType, LocalDate, LocalDate)"
+      - name: findByUserIdAndIsRecurringTrue
+        type: "List<Transaction>(String)"
+      - name: findById
+        type: "Optional<Transaction>(String)"
+      - name: save
+        type: "Transaction save(Transaction)"
+      - name: delete
+        type: "void delete(Transaction)"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Spring Data MongoRepository with derived queries and one explicit JSON query."
+
+  - name: user-document
+    kind: dto
+    source_loc: "server/src/main/java/com/spendsync/api/model/User.java:21"
+    used_by_units: [auth-api, transaction-api, monthly-report-job]
+    fields:
+      - name: id
+        type: String
+      - name: name
+        type: String
+      - name: email
+        type: String
+      - name: password
+        type: String
+      - name: avatarColor
+        type: String
+      - name: roles
+        type: "Set<String>"
+      - name: currency
+        type: String
+      - name: timezone
+        type: String
+      - name: createdAt
+        type: LocalDateTime
+      - name: updatedAt
+        type: LocalDateTime
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "MongoDB users collection document."
+
+  - name: transaction-document
+    kind: dto
+    source_loc: "server/src/main/java/com/spendsync/api/model/Transaction.java:21"
+    used_by_units: [transaction-api, monthly-report-job]
+    fields:
+      - name: id
+        type: String
+      - name: userId
+        type: String
+      - name: type
+        type: TransactionType
+      - name: category
+        type: String
+      - name: amount
+        type: BigDecimal
+      - name: description
+        type: String
+      - name: notes
+        type: String
+      - name: date
+        type: LocalDate
+      - name: isRecurring
+        type: boolean
+      - name: recurringFrequency
+        type: String
+      - name: createdAt
+        type: LocalDateTime
+      - name: updatedAt
+        type: LocalDateTime
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "MongoDB transactions collection document."
+
+  - name: security-configuration
+    kind: config
+    source_loc: "server/src/main/java/com/spendsync/api/config/SecurityConfig.java:29"
+    used_by_units: [auth-api, transaction-api]
+    fields:
+      - name: passwordEncoder
+        type: "BCryptPasswordEncoder"
+      - name: authenticationManager
+        type: "AuthenticationManager"
+      - name: public_auth_routes
+        type: "/api/auth/**"
+      - name: authenticated_routes
+        type: "all other routes require authentication"
+      - name: jwt_filter
+        type: "JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter"
+      - name: corsConfigurationSource
+        type: "CORS configuration from app.cors.allowed-origins"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "Stateless Spring Security configuration."
+
+  - name: global-error-handler
+    kind: utility
+    source_loc: "server/src/main/java/com/spendsync/api/exception/GlobalExceptionHandler.java:17"
+    used_by_units: [auth-api, transaction-api]
+    fields:
+      - name: bad_request
+        type: "BadRequestException -> HTTP 400"
+      - name: not_found
+        type: "ResourceNotFoundException -> HTTP 404"
+      - name: unauthorized
+        type: "BadCredentialsException -> HTTP 401"
+      - name: validation_errors
+        type: "MethodArgumentNotValidException -> HTTP 400 with field map"
+      - name: error_response
+        type: "{timestamp, status, error, message, validationErrors?}"
+    god_class: false
+    split_candidate: false
+    migration_strategy: copy
+    notes: "REST advice also maps unhandled exceptions to a generic HTTP 500 response."

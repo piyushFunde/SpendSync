@@ -1,0 +1,33 @@
+# Environment-specific files
+.env
+.env.local
+.env.*
+!.env.example
+
+# Build outputs
+dist/
+client/dist/
+server/target/
+
+# Node modules
+node_modules/
+client/node_modules/
+
+# Local validation state
+.tsupgrader/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Java
+*.class

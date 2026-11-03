@@ -1,0 +1,22 @@
+unit: register-page
+side_effects:
+  - source_loc: "client/src/store/authStore.js:64"
+    effect: "On successful registration, store the returned JWT in localStorage and update persisted authentication state."
+    must_preserve: true
+branches:
+  - source_loc: "client/src/pages/RegisterPage.jsx:17"
+    condition: "Name, email or password fails client validation, or confirmation differs"
+    behavior: "Show field validation errors and do not submit."
+    must_preserve: true
+  - source_loc: "client/src/pages/RegisterPage.jsx:28"
+    condition: "Registration succeeds"
+    behavior: "Show success toast and navigate to /dashboard."
+    must_preserve: true
+  - source_loc: "client/src/pages/RegisterPage.jsx:28"
+    condition: "Registration fails"
+    behavior: "Show the returned error in an error toast."
+    must_preserve: true
+error_paths: []
+concurrency:
+  model: event-loop
+  tx_boundary: null

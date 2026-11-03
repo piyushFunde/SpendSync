@@ -1,0 +1,39 @@
+unit: transaction-api
+bindings:
+  - type: route-declaration
+    name: "Transaction REST routes under /api/transactions"
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:28"
+    target: TransactionController
+    must_appear_in_target: true
+    notes: "GET/POST collection, GET/PUT/DELETE by ID, dashboard summary and CSV export."
+  - type: annotation
+    name: "@AuthenticationPrincipal UserDetails"
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:42"
+    target: "TransactionController authenticated handlers"
+    must_appear_in_target: true
+    notes: "Handlers resolve the current user's ID from the authenticated principal's email."
+  - type: annotation
+    name: "@Valid @RequestBody TransactionRequest"
+    source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:44"
+    target: "Transaction create/update validation"
+    must_appear_in_target: true
+    notes: "Request validation is defined by Jakarta Validation annotations."
+  - type: convention
+    name: "Authenticated stateless API and JWT filter"
+    source_loc: "server/src/main/java/com/spendsync/api/config/SecurityConfig.java:56"
+    target: "Spring Security filter chain"
+    must_appear_in_target: true
+    notes: "All routes other than auth and OPTIONS require authentication."
+runtime_config:
+  - key: app.cors.allowed-origins
+    source_loc: "server/src/main/java/com/spendsync/api/config/SecurityConfig.java:38"
+    source: env
+    default_value: "http://localhost:5173,http://localhost:3000"
+    must_appear_in_target: true
+    notes: "Allowed origins are read from ALLOWED_ORIGINS."
+  - key: spring.data.mongodb.uri
+    source_loc: "server/src/main/resources/application.yml:1"
+    source: env
+    default_value: "mongodb://localhost:27017/spendsync"
+    must_appear_in_target: true
+    notes: "MongoDB connection URI; environment variable MONGODB_URI."

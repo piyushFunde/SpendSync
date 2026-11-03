@@ -1,0 +1,9 @@
+unit: landing-page
+bindings:
+  - type: route-declaration
+    name: "React Router route /"
+    source_loc: "client/src/App.jsx:97"
+    target: LandingPage
+    must_appear_in_target: true
+    notes: "Public route."
+runtime_config: []

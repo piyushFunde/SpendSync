@@ -1,0 +1,28 @@
+unit: transactions-page
+side_effects:
+  - source_loc: "client/src/pages/TransactionsPage.jsx:25"
+    effect: "Fetch transactions on mount and whenever server-side filters change."
+    must_preserve: true
+  - source_loc: "client/src/pages/TransactionsPage.jsx:65"
+    effect: "CSV export downloads the current store's filtered CSV and reports success or failure by toast."
+    must_preserve: true
+  - source_loc: "client/src/pages/TransactionsPage.jsx:71"
+    effect: "PDF export generates a statement from the current user, displayed transactions and dashboard summary."
+    must_preserve: true
+branches:
+  - source_loc: "client/src/pages/TransactionsPage.jsx:31"
+    condition: "Search, quick type or sort control changes"
+    behavior: "Filter and order the loaded transaction list in the browser."
+    must_preserve: true
+  - source_loc: "client/src/pages/TransactionsPage.jsx:14"
+    condition: "Advanced filters are active"
+    behavior: "Allow filtering by category and date range and resetting filters."
+    must_preserve: true
+  - source_loc: "client/src/pages/TransactionsPage.jsx:14"
+    condition: "No transaction matches current filters/search"
+    behavior: "Show empty state and offer a reset when filters/search are active."
+    must_preserve: true
+error_paths: []
+concurrency:
+  model: event-loop
+  tx_boundary: null

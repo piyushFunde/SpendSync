@@ -1,0 +1,15 @@
+unit: settings-page
+bindings:
+  - type: route-declaration
+    name: "React Router route /settings"
+    source_loc: "client/src/App.jsx:112"
+    target: SettingsPage
+    must_appear_in_target: true
+    notes: "Nested under ProtectedRoute and authenticated AppLayout."
+  - type: convention
+    name: "Zustand auth-store preferences"
+    source_loc: "client/src/store/authStore.js:84"
+    target: "SettingsPage profile and currency preferences"
+    must_appear_in_target: true
+    notes: "Observed preference changes update browser store state; no backend profile-update endpoint was found."
+runtime_config: []

@@ -1,0 +1,244 @@
+units:
+  - name: landing-page
+    trigger: page
+    trigger_detail: "Browser route GET /"
+    source_anchors:
+      - path: client/src/pages/LandingPage.jsx
+        line: 10
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on: []
+    shared_refs:
+      - module: browser-route-config
+        used_fields: [route_definitions]
+
+  - name: login-page
+    trigger: page
+    trigger_detail: "Browser route GET /login"
+    source_anchors:
+      - path: client/src/pages/LoginPage.jsx
+        line: 7
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: auth-api
+        via: "POST /api/auth/login"
+    shared_refs:
+      - module: browser-route-config
+        used_fields: [route_definitions]
+      - module: auth-store
+        used_fields: [login, isLoading]
+      - module: axios-api-client
+        used_fields: [authApi]
+
+  - name: register-page
+    trigger: page
+    trigger_detail: "Browser route GET /register"
+    source_anchors:
+      - path: client/src/pages/RegisterPage.jsx
+        line: 8
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: auth-api
+        via: "POST /api/auth/register"
+    shared_refs:
+      - module: browser-route-config
+        used_fields: [route_definitions]
+      - module: auth-store
+        used_fields: [register, isLoading]
+      - module: axios-api-client
+        used_fields: [authApi]
+
+  - name: dashboard-page
+    trigger: page
+    trigger_detail: "Browser route GET /dashboard; protected by ProtectedRoute"
+    source_anchors:
+      - path: client/src/pages/DashboardPage.jsx
+        line: 59
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: transaction-api
+        via: "GET /api/transactions/dashboard and POST /api/transactions"
+    shared_refs:
+      - module: browser-route-config
+        used_fields: [route_definitions]
+      - module: auth-store
+        used_fields: [user]
+      - module: transaction-store
+        used_fields: [dashboard, fetchDashboard, addTransaction]
+      - module: frontend-formatting
+        used_fields: [formatCurrency, CHART_COLORS]
+      - module: transaction-modal
+        used_fields: [modal_form]
+      - module: transaction-item
+        used_fields: [transaction_row]
+
+  - name: transactions-page
+    trigger: page
+    trigger_detail: "Browser route GET /transactions; protected by ProtectedRoute"
+    source_anchors:
+      - path: client/src/pages/TransactionsPage.jsx
+        line: 14
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: transaction-api
+        via: "GET/POST/PUT/DELETE /api/transactions and GET /api/transactions/export/csv"
+    shared_refs:
+      - module: browser-route-config
+        used_fields: [route_definitions]
+      - module: auth-store
+        used_fields: [user]
+      - module: transaction-store
+        used_fields: [transactions, filters, setFilters, resetFilters, fetchTransactions, exportCsv, dashboard]
+      - module: frontend-formatting
+        used_fields: [EXPENSE_CATEGORIES, INCOME_CATEGORIES, formatCurrency]
+      - module: pdf-export
+        used_fields: [generateFinancialStatementPdf]
+      - module: transaction-modal
+        used_fields: [modal_form]
+      - module: transaction-item
+        used_fields: [transaction_row]
+
+  - name: analytics-page
+    trigger: page
+    trigger_detail: "Browser route GET /analytics; protected by ProtectedRoute"
+    source_anchors:
+      - path: client/src/pages/AnalyticsPage.jsx
+        line: 41
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: transaction-api
+        via: "GET /api/transactions/dashboard"
+    shared_refs:
+      - module: browser-route-config
+        used_fields: [route_definitions]
+      - module: auth-store
+        used_fields: [user]
+      - module: transaction-store
+        used_fields: [dashboard, fetchDashboard, transactions]
+      - module: frontend-formatting
+        used_fields: [formatCurrency, CHART_COLORS, getCategoryByLabel]
+      - module: pdf-export
+        used_fields: [generateFinancialStatementPdf]
+
+  - name: settings-page
+    trigger: page
+    trigger_detail: "Browser route GET /settings; protected by ProtectedRoute"
+    source_anchors:
+      - path: client/src/pages/SettingsPage.jsx
+        line: 7
+    exported_signature: []
+    dynamic_entrypoints: []
+    depends_on: []
+    shared_refs:
+      - module: browser-route-config
+        used_fields: [route_definitions]
+      - module: auth-store
+        used_fields: [user, updateUserPreferences]
+      - module: frontend-formatting
+        used_fields: [CURRENCIES, getInitials]
+
+  - name: auth-api
+    trigger: api
+    trigger_detail: "POST /api/auth/register; POST /api/auth/login"
+    source_anchors:
+      - path: server/src/main/java/com/spendsync/api/controller/AuthController.java
+        line: 20
+      - path: server/src/main/java/com/spendsync/api/service/AuthService.java
+        line: 34
+    exported_signature:
+      - method: "POST /api/auth/register(RegisterRequest) -> 201 AuthResponse"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/AuthController.java:20"
+        stability: must_preserve
+      - method: "POST /api/auth/login(LoginRequest) -> 200 AuthResponse"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/AuthController.java:25"
+        stability: must_preserve
+    dynamic_entrypoints:
+      - target: "com.spendsync.api.controller.AuthController"
+        mechanism: annotation-scan
+        source_loc: "server/src/main/java/com/spendsync/api/controller/AuthController.java:13"
+    depends_on: []
+    shared_refs:
+      - module: user-repository
+        used_fields: [findByEmail, existsByEmail, save]
+      - module: user-document
+        used_fields: [id, name, email, password, avatarColor, roles, currency, timezone, createdAt, updatedAt]
+      - module: security-configuration
+        used_fields: [passwordEncoder, authenticationManager, public_auth_routes]
+      - module: global-error-handler
+        used_fields: [bad_request, unauthorized, validation_errors, error_response]
+
+  - name: transaction-api
+    trigger: api
+    trigger_detail: "Authenticated /api/transactions REST resource"
+    source_anchors:
+      - path: server/src/main/java/com/spendsync/api/controller/TransactionController.java
+        line: 41
+      - path: server/src/main/java/com/spendsync/api/service/TransactionService.java
+        line: 29
+    exported_signature:
+      - method: "POST /api/transactions(TransactionRequest) -> 201 TransactionResponse"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:41"
+        stability: must_preserve
+      - method: "GET /api/transactions(type?, category?, startDate?, endDate?) -> List<TransactionResponse>"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:49"
+        stability: must_preserve
+      - method: "GET /api/transactions/{id} -> TransactionResponse"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:60"
+        stability: must_preserve
+      - method: "PUT /api/transactions/{id}(TransactionRequest) -> TransactionResponse"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:67"
+        stability: must_preserve
+      - method: "DELETE /api/transactions/{id} -> 204"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:75"
+        stability: must_preserve
+      - method: "GET /api/transactions/dashboard -> DashboardSummaryResponse"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:83"
+        stability: must_preserve
+      - method: "GET /api/transactions/export/csv(type?, startDate?, endDate?) -> text/csv"
+        source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:89"
+        stability: must_preserve
+    dynamic_entrypoints:
+      - target: "com.spendsync.api.controller.TransactionController"
+        mechanism: annotation-scan
+        source_loc: "server/src/main/java/com/spendsync/api/controller/TransactionController.java:27"
+    depends_on: []
+    shared_refs:
+      - module: user-repository
+        used_fields: [findByEmail, existsById]
+      - module: transaction-repository
+        used_fields: [findById, save, delete, findByUserIdOrderByDateDesc, findByUserIdAndDateBetweenOrderByDateDesc]
+      - module: user-document
+        used_fields: [id, email]
+      - module: transaction-document
+        used_fields: [id, userId, type, category, amount, description, notes, date, isRecurring, recurringFrequency, createdAt, updatedAt]
+      - module: security-configuration
+        used_fields: [authenticated_routes, jwt_filter, corsConfigurationSource]
+      - module: global-error-handler
+        used_fields: [bad_request, not_found, validation_errors, error_response]
+
+  - name: monthly-report-job
+    trigger: job
+    trigger_detail: "0 0 9 1 * * (09:00 on the first day of each month)"
+    source_anchors:
+      - path: server/src/main/java/com/spendsync/api/service/EmailReportService.java
+        line: 30
+    exported_signature: []
+    dynamic_entrypoints:
+      - target: "com.spendsync.api.service.EmailReportService.sendMonthlyReports"
+        mechanism: annotation-scan
+        source_loc: "server/src/main/java/com/spendsync/api/service/EmailReportService.java:30"
+    depends_on: []
+    shared_refs:
+      - module: user-repository
+        used_fields: [findAll]
+      - module: transaction-repository
+        used_fields: [findByUserIdAndDateBetweenOrderByDateDesc]
+      - module: user-document
+        used_fields: [id, name, email, currency]
+      - module: transaction-document
+        used_fields: [type, amount, date]

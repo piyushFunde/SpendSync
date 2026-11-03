@@ -1,0 +1,22 @@
+unit: login-page
+side_effects:
+  - source_loc: "client/src/store/authStore.js:27"
+    effect: "On successful login, store the returned JWT in localStorage and update persisted authentication state."
+    must_preserve: true
+branches:
+  - source_loc: "client/src/pages/LoginPage.jsx:14"
+    condition: "Email is absent or not email-shaped, or password is absent"
+    behavior: "Show field validation errors and do not submit."
+    must_preserve: true
+  - source_loc: "client/src/pages/LoginPage.jsx:23"
+    condition: "Login result succeeds"
+    behavior: "Show success toast and navigate to /dashboard."
+    must_preserve: true
+  - source_loc: "client/src/pages/LoginPage.jsx:23"
+    condition: "Login result fails"
+    behavior: "Show the returned error in an error toast."
+    must_preserve: true
+error_paths: []
+concurrency:
+  model: event-loop
+  tx_boundary: null

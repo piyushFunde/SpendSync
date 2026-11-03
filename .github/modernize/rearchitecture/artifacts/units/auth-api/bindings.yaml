@@ -1,0 +1,39 @@
+unit: auth-api
+bindings:
+  - type: route-declaration
+    name: "POST /api/auth/register"
+    source_loc: "server/src/main/java/com/spendsync/api/controller/AuthController.java:20"
+    target: "AuthController.register"
+    must_appear_in_target: true
+    notes: "@Valid request body; returns HTTP 201."
+  - type: route-declaration
+    name: "POST /api/auth/login"
+    source_loc: "server/src/main/java/com/spendsync/api/controller/AuthController.java:25"
+    target: "AuthController.login"
+    must_appear_in_target: true
+    notes: "@Valid request body; returns HTTP 200."
+  - type: annotation
+    name: "@RestController and @RequestMapping(\"/api/auth\")"
+    source_loc: "server/src/main/java/com/spendsync/api/controller/AuthController.java:13"
+    target: AuthController
+    must_appear_in_target: true
+    notes: "Spring MVC REST controller; class is discovered by component scanning."
+  - type: convention
+    name: "Public authentication routes and BCrypt password encoder"
+    source_loc: "server/src/main/java/com/spendsync/api/config/SecurityConfig.java:56"
+    target: "Spring Security filter chain"
+    must_appear_in_target: true
+    notes: "Authentication API routes are permitted without an existing bearer token."
+runtime_config:
+  - key: app.jwt.secret
+    source_loc: "server/src/main/java/com/spendsync/api/security/JwtTokenProvider.java:19"
+    source: env
+    default_value: "application.yml default (see configuration file)"
+    must_appear_in_target: true
+    notes: "Signing key injected from JWT_SECRET."
+  - key: app.jwt.expiration-ms
+    source_loc: "server/src/main/java/com/spendsync/api/security/JwtTokenProvider.java:22"
+    source: env
+    default_value: "86400000"
+    must_appear_in_target: true
+    notes: "Token expiry interval in milliseconds."

@@ -1,0 +1,15 @@
+unit: dashboard-page
+bindings:
+  - type: route-declaration
+    name: "React Router route /dashboard"
+    source_loc: "client/src/App.jsx:109"
+    target: DashboardPage
+    must_appear_in_target: true
+    notes: "Nested under ProtectedRoute and authenticated AppLayout."
+  - type: convention
+    name: "Zustand transaction store"
+    source_loc: "client/src/store/transactionStore.js:207"
+    target: "DashboardPage data loading and quick-log actions"
+    must_appear_in_target: true
+    notes: "Dashboard fallback data is generated locally when the API call fails."
+runtime_config: []

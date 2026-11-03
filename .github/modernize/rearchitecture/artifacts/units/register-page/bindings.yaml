@@ -1,0 +1,15 @@
+unit: register-page
+bindings:
+  - type: route-declaration
+    name: "React Router route /register"
+    source_loc: "client/src/App.jsx:99"
+    target: RegisterPage
+    must_appear_in_target: true
+    notes: "Public route."
+  - type: convention
+    name: "Zustand auth store and Axios auth API"
+    source_loc: "client/src/store/authStore.js:14"
+    target: "RegisterPage register action"
+    must_appear_in_target: true
+    notes: "Registration payload excludes confirmPassword; successful response persists token and user state."
+runtime_config: []

@@ -1,0 +1,26 @@
+unit: auth-api
+side_effects:
+  - source_loc: "server/src/main/java/com/spendsync/api/service/AuthService.java:50"
+    effect: "Registration hashes the password, creates a user with USER role and random avatar color, saves it, then issues a JWT."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/service/AuthService.java:73"
+    effect: "Successful login returns a signed JWT and user profile fields."
+    must_preserve: true
+branches:
+  - source_loc: "server/src/main/java/com/spendsync/api/service/AuthService.java:29"
+    condition: "Email already exists"
+    behavior: "Reject registration with BadRequestException."
+    must_preserve: true
+  - source_loc: "server/src/main/java/com/spendsync/api/service/AuthService.java:58"
+    condition: "Credentials do not authenticate"
+    behavior: "Authentication failure is mapped to HTTP 401 with generic invalid-credentials message."
+    must_preserve: true
+error_paths:
+  - source_loc: "server/src/main/java/com/spendsync/api/exception/GlobalExceptionHandler.java:31"
+    trigger: "Request bean validation fails"
+    outcome: "HTTP 400 with structured validationErrors keyed by field."
+    contract: "ErrorResponse contains timestamp, status, error, message and optional validationErrors."
+    must_preserve: true
+concurrency:
+  model: sync
+  tx_boundary: null

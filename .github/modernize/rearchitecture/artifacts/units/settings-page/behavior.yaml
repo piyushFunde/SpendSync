@@ -1,0 +1,17 @@
+unit: settings-page
+side_effects:
+  - source_loc: "client/src/pages/SettingsPage.jsx:13"
+    effect: "Save profile name and currency to the local auth-store user preferences and show a success toast."
+    must_preserve: true
+  - source_loc: "client/src/pages/SettingsPage.jsx:187"
+    effect: "Reset action clears all browser localStorage and reloads the page after a short delay."
+    must_preserve: true
+branches:
+  - source_loc: "client/src/pages/SettingsPage.jsx:7"
+    condition: "User selects profile, preferences, security or notifications tab"
+    behavior: "Render the corresponding settings panel."
+    must_preserve: true
+error_paths: []
+concurrency:
+  model: event-loop
+  tx_boundary: null

@@ -1,0 +1,19 @@
+unit: landing-page
+side_effects: []
+branches:
+  - source_loc: "client/src/pages/LandingPage.jsx:10"
+    condition: "Mobile menu toggle is activated"
+    behavior: "Show/hide the mobile navigation; selecting an in-page link closes it."
+    must_preserve: true
+  - source_loc: "client/src/pages/LandingPage.jsx:10"
+    condition: "FAQ item is selected"
+    behavior: "Update the active FAQ item."
+    must_preserve: true
+  - source_loc: "client/src/pages/LandingPage.jsx:10"
+    condition: "User changes the savings calculator input"
+    behavior: "Display annual savings calculated as input * 0.18 * 12."
+    must_preserve: true
+error_paths: []
+concurrency:
+  model: event-loop
+  tx_boundary: null

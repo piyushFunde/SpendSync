@@ -1,0 +1,21 @@
+unit: dashboard-page
+side_effects:
+  - source_loc: "client/src/pages/DashboardPage.jsx:67"
+    effect: "Fetch dashboard summary when the page mounts."
+    must_preserve: true
+  - source_loc: "client/src/pages/DashboardPage.jsx:78"
+    effect: "Quick-log action submits a transaction and refreshes the dashboard after success."
+    must_preserve: true
+branches:
+  - source_loc: "client/src/pages/DashboardPage.jsx:78"
+    condition: "Quick-log create result succeeds"
+    behavior: "Show success toast and reload dashboard summary."
+    must_preserve: true
+  - source_loc: "client/src/pages/DashboardPage.jsx:78"
+    condition: "Quick-log type omitted"
+    behavior: "Create an EXPENSE transaction by default."
+    must_preserve: true
+error_paths: []
+concurrency:
+  model: event-loop
+  tx_boundary: null

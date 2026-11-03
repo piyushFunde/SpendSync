@@ -1,0 +1,21 @@
+unit: analytics-page
+side_effects:
+  - source_loc: "client/src/pages/AnalyticsPage.jsx:48"
+    effect: "Fetch dashboard summary when the page mounts."
+    must_preserve: true
+  - source_loc: "client/src/pages/AnalyticsPage.jsx:84"
+    effect: "PDF action generates a financial statement from the user, transaction store and dashboard summary."
+    must_preserve: true
+branches:
+  - source_loc: "client/src/pages/AnalyticsPage.jsx:60"
+    condition: "Income is positive"
+    behavior: "Calculate savings rate from income and expense; otherwise display zero."
+    must_preserve: true
+  - source_loc: "client/src/pages/AnalyticsPage.jsx:68"
+    condition: "Average monthly expenses and balance are positive"
+    behavior: "Calculate financial runway in months; otherwise display zero."
+    must_preserve: true
+error_paths: []
+concurrency:
+  model: event-loop
+  tx_boundary: null

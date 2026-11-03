@@ -1,0 +1,39 @@
+unit: monthly-report-job
+bindings:
+  - type: annotation
+    name: "@Scheduled(cron = \"0 0 9 1 * *\")"
+    source_loc: "server/src/main/java/com/spendsync/api/service/EmailReportService.java:30"
+    target: "EmailReportService.sendMonthlyReports"
+    must_appear_in_target: true
+    notes: "Scheduled for 09:00 on the first day of each month using the server's configured timezone."
+  - type: annotation
+    name: "@EnableScheduling"
+    source_loc: "server/src/main/java/com/spendsync/api/SpendSyncApplication.java:8"
+    target: "Spring application scheduling"
+    must_appear_in_target: true
+    notes: "Enables scheduled task processing."
+runtime_config:
+  - key: spring.mail.host
+    source_loc: "server/src/main/resources/application.yml:4"
+    source: env
+    default_value: "smtp.gmail.com"
+    must_appear_in_target: true
+    notes: "SMTP host supplied by MAIL_HOST."
+  - key: spring.mail.port
+    source_loc: "server/src/main/resources/application.yml:5"
+    source: env
+    default_value: "587"
+    must_appear_in_target: true
+    notes: "SMTP port supplied by MAIL_PORT."
+  - key: spring.mail.username
+    source_loc: "server/src/main/resources/application.yml:6"
+    source: env
+    default_value: "your-email@gmail.com"
+    must_appear_in_target: true
+    notes: "SMTP username supplied by MAIL_USERNAME."
+  - key: spring.mail.password
+    source_loc: "server/src/main/resources/application.yml:7"
+    source: env
+    default_value: "your-app-password"
+    must_appear_in_target: true
+    notes: "SMTP password supplied by MAIL_PASSWORD."

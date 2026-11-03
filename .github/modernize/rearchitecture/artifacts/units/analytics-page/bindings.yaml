@@ -1,0 +1,15 @@
+unit: analytics-page
+bindings:
+  - type: route-declaration
+    name: "React Router route /analytics"
+    source_loc: "client/src/App.jsx:111"
+    target: AnalyticsPage
+    must_appear_in_target: true
+    notes: "Nested under ProtectedRoute and authenticated AppLayout."
+  - type: convention
+    name: "Zustand transaction store and dashboard endpoint"
+    source_loc: "client/src/store/transactionStore.js:207"
+    target: "AnalyticsPage dashboard and transaction data"
+    must_appear_in_target: true
+    notes: "Store supplies local demo fallback if remote dashboard request fails."
+runtime_config: []

@@ -1,0 +1,15 @@
+unit: login-page
+bindings:
+  - type: route-declaration
+    name: "React Router route /login"
+    source_loc: "client/src/App.jsx:98"
+    target: LoginPage
+    must_appear_in_target: true
+    notes: "Public route."
+  - type: convention
+    name: "Zustand auth store and Axios auth API"
+    source_loc: "client/src/store/authStore.js:14"
+    target: "LoginPage login action"
+    must_appear_in_target: true
+    notes: "Successful response persists token and authenticated user state."
+runtime_config: []

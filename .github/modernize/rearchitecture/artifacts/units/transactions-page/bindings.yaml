@@ -1,0 +1,15 @@
+unit: transactions-page
+bindings:
+  - type: route-declaration
+    name: "React Router route /transactions"
+    source_loc: "client/src/App.jsx:110"
+    target: TransactionsPage
+    must_appear_in_target: true
+    notes: "Nested under ProtectedRoute and authenticated AppLayout."
+  - type: convention
+    name: "Zustand transaction store, Axios REST client and transaction modal"
+    source_loc: "client/src/store/transactionStore.js:207"
+    target: "TransactionsPage loading, filter, CRUD and export actions"
+    must_appear_in_target: true
+    notes: "Store falls back to local demo data after failed remote calls."
+runtime_config: []

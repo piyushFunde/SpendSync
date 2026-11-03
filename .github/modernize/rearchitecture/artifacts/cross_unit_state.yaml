@@ -1,0 +1,30 @@
+flows:
+  - name: "JWT from login to authenticated API calls"
+    medium: http-header
+    key: "Authorization: Bearer <JWT> (JWT retained in browser localStorage)"
+    writer:
+      unit: login-page
+      source_loc: "client/src/store/authStore.js:27"
+    reader:
+      unit: transaction-api
+      source_loc: "server/src/main/java/com/spendsync/api/security/JwtAuthenticationFilter.java:49"
+    pairing: matched
+    must_preserve: true
+    must_confirm: null
+    verification_hint: "Login, then verify a protected API request carries a Bearer token and resolves the authenticated user's email."
+    notes: "The auth store writes the returned token to localStorage; the Axios request interceptor reads it and adds the Authorization header. Registration performs the same token write."
+
+  - name: "Offline/demo transactions shared by ledger and dashboard"
+    medium: local-storage
+    key: spendsync_transactions
+    writer:
+      unit: transactions-page
+      source_loc: "client/src/store/transactionStore.js:204"
+    reader:
+      unit: dashboard-page
+      source_loc: "client/src/store/transactionStore.js:191"
+    pairing: matched
+    must_preserve: true
+    must_confirm: null
+    verification_hint: "With the API unavailable, add a ledger entry and confirm it is reflected in the dashboard's local summary after route navigation."
+    notes: "The shared Zustand transaction store falls back to localStorage-backed demo transactions after remote request errors."
