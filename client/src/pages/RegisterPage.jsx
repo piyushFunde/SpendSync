@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Wallet } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import { CURRENCIES } from '../utils/constants';
 import toast from 'react-hot-toast';
+import AuthLayout from '../components/AuthLayout';
 
 const RegisterPage = () => {
   const [form, setForm] = useState({
@@ -44,26 +45,19 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="auth-container relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      <div className="auth-card relative z-10 w-full max-w-md p-6 sm:p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="sidebar-brand-mark">
-            <Wallet size={21} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">SpendSync</h1>
-            <p className="text-xs text-slate-400">Personal finance, made clearer.</p>
-          </div>
-        </div>
-
-        <div className="mb-5">
-          <h2 className="text-2xl font-bold text-white tracking-tight">Create your account</h2>
-          <p className="text-slate-400 text-sm mt-1">Set up your profile to start tracking your finances.</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-3.5" noValidate>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="form-group col-span-2 sm:col-span-1">
+    <AuthLayout
+      variant="register"
+      title="Create your account"
+      description="Set up your profile and preferred currency."
+      footer={(
+        <p className="auth-account-link">
+          Already have an account?{' '}
+          <Link to="/login">Sign in</Link>
+        </p>
+      )}
+    >
+      <form onSubmit={handleSubmit} className="auth-form-fields auth-register-fields" noValidate>
+          <div className="form-group">
               <label className="form-label text-[11px]" htmlFor="name">Full name</label>
               <input
                 id="name"
@@ -75,23 +69,7 @@ const RegisterPage = () => {
                 className={`form-input text-sm ${errors.name ? 'error' : ''}`}
               />
               {errors.name && <p className="form-error">{errors.name}</p>}
-            </div>
-
-            <div className="form-group col-span-2 sm:col-span-1">
-              <label className="form-label text-[11px]" htmlFor="currency">Currency</label>
-              <select
-                id="currency"
-                value={form.currency}
-                onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                className="form-select text-sm"
-              >
-                {CURRENCIES.map((c) => (
-                  <option key={c.code} value={c.code}>{c.symbol} {c.name} ({c.code})</option>
-                ))}
-              </select>
-            </div>
           </div>
-
           <div className="form-group">
             <label className="form-label text-[11px]" htmlFor="email">Email address</label>
             <input
@@ -106,7 +84,7 @@ const RegisterPage = () => {
             {errors.email && <p className="form-error">{errors.email}</p>}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <div className="form-group">
               <label className="form-label text-[11px]" htmlFor="password">Password</label>
               <div className="relative">
@@ -122,9 +100,9 @@ const RegisterPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  className="auth-password-toggle"
                 >
-                  {showPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+                  {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
               {errors.password && <p className="form-error">{errors.password}</p>}
@@ -145,25 +123,30 @@ const RegisterPage = () => {
             </div>
           </div>
 
+          <div className="form-group">
+            <label className="form-label text-[11px]" htmlFor="currency">Preferred currency</label>
+            <select
+              id="currency"
+              value={form.currency}
+              onChange={(e) => setForm({ ...form, currency: e.target.value })}
+              className="form-select text-sm"
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code}>{c.code} — {c.name}</option>
+              ))}
+            </select>
+          </div>
+
           <button
             type="submit"
             disabled={isLoading}
             className="btn-primary w-full btn-lg mt-3"
             id="register-btn"
           >
-            {isLoading ? <span className="spinner" /> : 'Create account'}
+            {isLoading ? <span className="spinner" /> : <>Create account <ArrowRight size={16} /></>}
           </button>
         </form>
-
-        <p className="text-center text-sm text-slate-400 mt-5">
-          Already registered?{' '}
-          <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">
-            Sign in
-          </Link>
-        </p>
-
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Wallet } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import toast from 'react-hot-toast';
+import AuthLayout from '../components/AuthLayout';
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -33,24 +34,18 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="auth-container relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      <div className="auth-card relative z-10 w-full max-w-md p-6 sm:p-8">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="sidebar-brand-mark">
-            <Wallet size={21} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">SpendSync</h1>
-            <p className="text-xs text-slate-400">Personal finance, made clearer.</p>
-          </div>
-        </div>
-
-        <div className="mb-7">
-          <h2 className="text-2xl font-bold text-white tracking-tight">Welcome back</h2>
-          <p className="text-slate-400 text-sm mt-1">Sign in to view your transactions and overview.</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <AuthLayout
+      variant="login"
+      title="Welcome back"
+      description="Sign in to see your overview."
+      footer={(
+        <p className="auth-account-link">
+          New to SpendSync?{' '}
+          <Link to="/register">Create an account</Link>
+        </p>
+      )}
+    >
+      <form onSubmit={handleSubmit} className="auth-form-fields" noValidate>
           <div className="form-group">
             <label className="form-label text-[11px]" htmlFor="email">Email address</label>
             <input
@@ -80,10 +75,11 @@ const LoginPage = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                className="auth-password-toggle"
                 id="toggle-password"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
             {errors.password && <p className="form-error">{errors.password}</p>}
@@ -95,19 +91,10 @@ const LoginPage = () => {
             className="btn-primary w-full btn-lg mt-4"
             id="login-btn"
           >
-            {isLoading ? <span className="spinner" /> : 'Sign in'}
+            {isLoading ? <span className="spinner" /> : <>Sign in <ArrowRight size={16} /></>}
           </button>
         </form>
-
-        <p className="text-center text-sm text-slate-400 mt-6">
-          Don't have an account yet?{' '}
-          <Link to="/register" className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">
-            Create an account
-          </Link>
-        </p>
-
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 
