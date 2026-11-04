@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: spendsync-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: spendsync
+    volumes:
+      - mongodb_data:/data/db
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: spendsync-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/spendsync
+      JWT_SECRET: ${JWT_SECRET:-SpendSyncProductionSecretKeyMustBe32CharsOrMore2024!}
+      JWT_EXPIRATION_MS: 604800000
+      PORT: 8080
+      ALLOWED_ORIGINS: http://localhost,http://localhost:80,http://localhost:5173
+    depends_on:
+      - mongodb
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: spendsync-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+
+volumes:
+  mongodb_data:
+

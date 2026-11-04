@@ -15,11 +15,16 @@ const DashboardPage = () => {
   const [currentDate] = useState(() => new Date());
   const currentMonth = currentDate.toLocaleDateString(undefined, { month: 'long' });
   const monthlyData = dashboard?.monthlyData || [];
+
+  // Backend returns "Jan 2024" format (MMM yyyy via Java DateTimeFormatter)
+  const currentMonthShort = currentDate.toLocaleString('en-US', { month: 'short' });
+  const currentYear = currentDate.getFullYear();
   const currentMonthData = monthlyData.find(
-    (month) => month.month === currentDate.toLocaleDateString(undefined, { month: 'short' })
+    (m) => m.month === `${currentMonthShort} ${currentYear}` || m.month === currentMonthShort
   ) || monthlyData.at(-1) || { income: 0, expense: 0 };
+
   const chartData = monthlyData.slice(-rangeMonths);
-  const maxAmount = Math.max(...chartData.flatMap((month) => [month.income, month.expense]), 1);
+  const maxAmount = Math.max(...chartData.flatMap((m) => [m.income, m.expense]), 1);
   const recentTransactions = dashboard?.recentTransactions || [];
   const savedThisMonth = currentMonthData.income - currentMonthData.expense;
   const savingsRate = currentMonthData.income > 0
@@ -88,7 +93,7 @@ const DashboardPage = () => {
               <div className="progress-track" role="progressbar" aria-label="Monthly savings share of income" aria-valuenow={Math.round(savingsRate)} aria-valuemin="0" aria-valuemax="100">
                 <span className="progress-fill" style={{ width: `${savingsRate}%` }} />
               </div>
-              <small>{Math.round(savingsRate)}% of this month’s income saved</small>
+              <small>{Math.round(savingsRate)}% of this month&apos;s income saved</small>
             </article>
             <article className="workspace-card progress-card">
               <span className="overview-stat-label">Monthly spending</span>
@@ -128,21 +133,21 @@ const DashboardPage = () => {
               {chartData.length ? (
                 <>
                   <div className="cashflow-chart" role="img" aria-label={`Income and expenses over the last ${chartData.length} months`}>
-                    {chartData.map((month) => (
-                      <div className="cashflow-month" key={month.month}>
+                    {chartData.map((m) => (
+                      <div className="cashflow-month" key={m.month}>
                         <div className="cashflow-bars">
                           <span
                             className="cashflow-bar cashflow-income"
-                            style={{ height: `${Math.max((month.income / maxAmount) * 100, month.income ? 4 : 0)}%` }}
-                            title={`Income: ${formatCurrency(month.income, currency)}`}
+                            style={{ height: `${Math.max((m.income / maxAmount) * 100, m.income ? 4 : 0)}%` }}
+                            title={`Income: ${formatCurrency(m.income, currency)}`}
                           />
                           <span
                             className="cashflow-bar cashflow-expense"
-                            style={{ height: `${Math.max((month.expense / maxAmount) * 100, month.expense ? 4 : 0)}%` }}
-                            title={`Expenses: ${formatCurrency(month.expense, currency)}`}
+                            style={{ height: `${Math.max((m.expense / maxAmount) * 100, m.expense ? 4 : 0)}%` }}
+                            title={`Expenses: ${formatCurrency(m.expense, currency)}`}
                           />
                         </div>
-                        <span className="cashflow-month-label">{month.month}</span>
+                        <span className="cashflow-month-label">{m.month}</span>
                       </div>
                     ))}
                   </div>
