@@ -6294,3 +6294,212 @@ body {
     font-size: 20px;
   }
 }
+
+/* Sidebar rail and mobile slide-in navigation */
+.sidebar-account {
+  padding: 10px;
+  background: #111114;
+  border: 1px solid #222225;
+  border-radius: 12px;
+}
+
+.sidebar-account-profile {
+  min-width: 0;
+}
+
+.sidebar-account-avatar {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 9px;
+}
+
+.sidebar-account-name {
+  color: #fff;
+  font-size: 10px;
+}
+
+.sidebar-account-email {
+  overflow: hidden;
+  color: #85858b;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-sign-out {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin-top: 8px;
+  padding: 0 8px;
+  color: #f4f4f5;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sidebar-sign-out:hover {
+  background: #1b1b1b;
+  border-color: #3a3a3a;
+}
+
+.mobile-sidebar-overlay {
+  display: none;
+  padding: 0;
+  border: 0;
+  cursor: default;
+}
+
+@media (min-width: 560px) {
+  .mobile-sidebar {
+    display: none !important;
+  }
+}
+
+@media (min-width: 560px) and (max-width: 900px) {
+  .sidebar-brand-link {
+    gap: 6px;
+    padding: 16px 6px;
+  }
+
+  .sidebar-brand-icon {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    border-radius: 6px;
+  }
+
+  .sidebar-brand-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .sidebar-brand-name {
+    font-size: 11px;
+  }
+
+  .sidebar-nav {
+    margin-top: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+  .sidebar-nav > div:first-child {
+    padding-right: 3px;
+    padding-left: 3px;
+    font-size: 6px;
+    letter-spacing: .08em;
+  }
+
+  .app-sidebar .nav-item {
+    min-height: 28px;
+    gap: 5px;
+    padding: 0 5px;
+    font-size: 8px;
+  }
+
+  .app-sidebar .nav-item svg {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+  }
+
+  .sidebar-account-container {
+    padding: 3px;
+  }
+
+  .sidebar-account {
+    padding: 6px;
+    border-radius: 10px;
+  }
+
+  .sidebar-account-profile {
+    gap: 5px;
+  }
+
+  .sidebar-account-avatar {
+    width: 22px;
+    height: 22px;
+    flex-basis: 22px;
+    font-size: 7px;
+  }
+
+  .sidebar-account-name {
+    font-size: 8px;
+  }
+
+  .sidebar-account-email {
+    font-size: 6px;
+  }
+
+  .sidebar-sign-out {
+    min-height: 23px;
+    margin-top: 6px;
+    padding: 0 5px;
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 559px) {
+  .mobile-sidebar-overlay {
+    display: block;
+  }
+
+  .mobile-sidebar {
+    display: flex !important;
+    width: min(288px, calc(100vw - 48px));
+    transform: translateX(-100%);
+    transition: transform 220ms ease;
+    will-change: transform;
+  }
+
+  .mobile-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .mobile-sidebar .sidebar-brand-link {
+    padding-right: 48px;
+  }
+
+  .sidebar-account-container {
+    padding: 12px;
+  }
+
+  .sidebar-account {
+    padding: 12px;
+  }
+
+  .sidebar-account-avatar {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    font-size: 10px;
+  }
+
+  .sidebar-account-name {
+    font-size: 11px;
+  }
+
+  .sidebar-account-email {
+    font-size: 9px;
+  }
+
+  .sidebar-sign-out {
+    min-height: 34px;
+    margin-top: 10px;
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-sidebar {
+    transition-duration: 0.01ms;
+  }
+}
