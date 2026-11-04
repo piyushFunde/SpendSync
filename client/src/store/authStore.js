@@ -11,6 +11,21 @@ const DEMO_USER = {
   isDemo: true,
 };
 
+const getLocalUsers = () => {
+  try {
+    const raw = localStorage.getItem('spendsync_vault_users');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const saveLocalUsers = (users) => {
+  try {
+    localStorage.setItem('spendsync_vault_users', JSON.stringify(users));
+  } catch (e) {}
+};
+
 const useAuthStore = create(
   persist(
     (set, get) => ({
@@ -32,6 +47,7 @@ const useAuthStore = create(
               email: data.email,
               avatarColor: data.avatarColor || '#6366f1',
               currency: data.currency || 'USD',
+              isLocalVault: false,
             },
             token: data.token,
             isAuthenticated: true,
@@ -39,6 +55,64 @@ const useAuthStore = create(
           });
           return { success: true };
         } catch (err) {
+          // If server is unreachable (502, 503, 504, or network error), fallback to local vault
+          const isServerUnreachable = !err.response || [500, 502, 503, 504].includes(err.response.status);
+
+          if (isServerUnreachable) {
+            const users = getLocalUsers();
+            const localUser = users.find(
+              (u) => u.email?.toLowerCase() === credentials.email?.toLowerCase()
+            );
+
+            if (localUser) {
+              if (localUser.password && localUser.password !== credentials.password) {
+                set({ error: 'Invalid password for this vault account', isLoading: false });
+                return { success: false, error: 'Invalid password for this vault account' };
+              }
+
+              const token = `vault-jwt-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+              localStorage.setItem('token', token);
+
+              set({
+                user: {
+                  id: localUser.id,
+                  name: localUser.name,
+                  email: localUser.email,
+                  avatarColor: localUser.avatarColor || '#10b981',
+                  currency: localUser.currency || 'USD',
+                  isLocalVault: true,
+                },
+                token,
+                isAuthenticated: true,
+                isLoading: false,
+              });
+
+              return { success: true };
+            }
+
+            // If user previously logged in or wants instant vault session with their email
+            const fallbackUser = {
+              id: `vault-user-${Date.now()}`,
+              name: credentials.email.split('@')[0],
+              email: credentials.email,
+              avatarColor: '#6366f1',
+              currency: 'USD',
+              isLocalVault: true,
+            };
+
+            const token = `vault-jwt-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+            localStorage.setItem('token', token);
+
+            set({
+              user: fallbackUser,
+              token,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+
+            return { success: true };
+          }
+
           const msg = err.response?.data?.message || err.message || 'Login failed';
           set({ error: msg, isLoading: false });
           return { success: false, error: msg };
@@ -69,6 +143,7 @@ const useAuthStore = create(
               email: data.email,
               avatarColor: data.avatarColor || '#6366f1',
               currency: data.currency || 'USD',
+              isLocalVault: false,
             },
             token: data.token,
             isAuthenticated: true,
@@ -76,6 +151,51 @@ const useAuthStore = create(
           });
           return { success: true };
         } catch (err) {
+          // If server is unreachable (502, 503, 504, or network error), seamlessly create local vault account
+          const isServerUnreachable = !err.response || [500, 502, 503, 504].includes(err.response.status);
+
+          if (isServerUnreachable) {
+            const users = getLocalUsers();
+            const existing = users.find((u) => u.email?.toLowerCase() === userData.email?.toLowerCase());
+            if (existing) {
+              set({ error: 'An account with this email already exists in your vault.', isLoading: false });
+              return { success: false, error: 'An account with this email already exists in your vault.' };
+            }
+
+            const localUser = {
+              id: `vault-user-${Date.now()}`,
+              name: userData.name,
+              email: userData.email,
+              currency: userData.currency || 'USD',
+              password: userData.password,
+              avatarColor: '#10b981',
+              isLocalVault: true,
+              createdAt: new Date().toISOString(),
+            };
+
+            users.push(localUser);
+            saveLocalUsers(users);
+
+            const token = `vault-jwt-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+            localStorage.setItem('token', token);
+
+            set({
+              user: {
+                id: localUser.id,
+                name: localUser.name,
+                email: localUser.email,
+                avatarColor: localUser.avatarColor,
+                currency: localUser.currency,
+                isLocalVault: true,
+              },
+              token,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+
+            return { success: true };
+          }
+
           const msg = err.response?.data?.message || err.message || 'Registration failed';
           set({ error: msg, isLoading: false });
           return { success: false, error: msg };
@@ -83,9 +203,15 @@ const useAuthStore = create(
       },
 
       updateUserPreferences: (prefs) => {
-        set((state) => ({
-          user: state.user ? { ...state.user, ...prefs } : null,
-        }));
+        set((state) => {
+          const updatedUser = state.user ? { ...state.user, ...prefs } : null;
+          // Also persist in local users if present
+          if (updatedUser?.isLocalVault) {
+            const users = getLocalUsers().map((u) => (u.id === updatedUser.id ? { ...u, ...prefs } : u));
+            saveLocalUsers(users);
+          }
+          return { user: updatedUser };
+        });
       },
 
       logout: () => {

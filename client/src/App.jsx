@@ -5,27 +5,55 @@ import { Download, Wallet, X } from 'lucide-react';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import Sidebar from './components/Sidebar';
-import Header from './components/Header';
+import TransactionModal from './components/TransactionModal';
+import useTransactionStore from './store/transactionStore';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import TransactionsPage from './pages/TransactionsPage';
-import AnalyticsPage from './pages/AnalyticsPage';
+import CategoriesPage from './pages/CategoriesPage';
+import ExportPage from './pages/ExportPage';
 import SettingsPage from './pages/SettingsPage';
 
 // Shared authenticated application layout.
-const AppLayout = () => (
-  <div className="app-shell flex min-h-screen relative text-slate-100 overflow-x-hidden selection:bg-indigo-500 selection:text-white">
-    <Sidebar />
-    <div className="flex-1 flex flex-col min-w-0 relative z-10">
-      <Header />
-      <main className="flex-1 flex flex-col min-w-0">
-        <Outlet />
+const AppLayout = () => {
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+  const { fetchDashboard, fetchTransactions } = useTransactionStore();
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (
+        (event.key === 'n' || event.key === 'N') &&
+        !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) &&
+        !isTransactionModalOpen
+      ) {
+        event.preventDefault();
+        setIsTransactionModalOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isTransactionModalOpen]);
+
+  return (
+    <div className="app-shell min-h-screen text-slate-100 overflow-x-hidden">
+      <Sidebar />
+      <main className="app-content min-w-0">
+        <Outlet context={{ openTransactionModal: () => setIsTransactionModalOpen(true) }} />
       </main>
+      <TransactionModal
+        isOpen={isTransactionModalOpen}
+        onClose={() => setIsTransactionModalOpen(false)}
+        onSuccess={() => {
+          fetchDashboard();
+          fetchTransactions();
+        }}
+      />
     </div>
-  </div>
-);
+  );
+};
 
 // PWA Install Banner
 const PwaBanner = () => {
@@ -101,7 +129,8 @@ function App() {
         >
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/transactions" element={<TransactionsPage />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/analytics" element={<CategoriesPage />} />
+          <Route path="/export" element={<ExportPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
 

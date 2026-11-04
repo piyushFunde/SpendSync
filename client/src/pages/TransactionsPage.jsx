@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import {
-  Search, Download, X, SlidersHorizontal, FileText
+  Search, X, SlidersHorizontal, FileText, Plus
 } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 import useTransactionStore from '../store/transactionStore';
 import useAuthStore from '../store/authStore';
 import TransactionItem from '../components/TransactionItem';
@@ -11,12 +12,14 @@ import { generateFinancialStatementPdf } from '../utils/pdfExport';
 import toast from 'react-hot-toast';
 
 const TransactionsPage = () => {
+  const { openTransactionModal } = useOutletContext();
   const [search, setSearch] = useState('');
+  const [currentMonth] = useState(() => new Date().toLocaleDateString(undefined, { month: 'long' }));
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('date-desc'); // date-desc, date-asc, amount-desc, amount-asc
   const [quickType, setQuickType] = useState('ALL'); // ALL, INCOME, EXPENSE
 
-  const { transactions, filters, setFilters, resetFilters, fetchTransactions, exportCsv, isLoadingTransactions, isExporting, transactionsError } = useTransactionStore();
+  const { transactions, filters, setFilters, resetFilters, fetchTransactions, isLoadingTransactions, transactionsError } = useTransactionStore();
   const user = useAuthStore((s) => s.user);
   const currency = user?.currency || 'USD';
 
@@ -60,14 +63,6 @@ const TransactionsPage = () => {
 
   const viewNet = viewInflow - viewOutflow;
 
-  const handleExportCsv = async () => {
-    const result = await exportCsv();
-    if (result.success) {
-      toast.success(result.usedLocalExport ? 'CSV exported from loaded transactions' : 'CSV exported');
-    }
-    else toast.error(result.error);
-  };
-
   const handleExportPdf = () => {
     try {
       generateFinancialStatementPdf({
@@ -83,27 +78,18 @@ const TransactionsPage = () => {
   const hasActiveFilters = filters.type || filters.category || filters.startDate || filters.endDate;
 
   return (
-    <div className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl w-full mx-auto">
+    <div className="workspace-page transactions-page">
       {/* Top Header */}
       <div className="page-heading">
         <div>
+          <span className="page-eyebrow">YOUR RECORDS</span>
           <h1 className="page-title">Transactions</h1>
           <p className="page-description">
-            Search, filter, and export your recorded transactions.
+            {currentMonth} · Search and manage your transactions
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={handleExportCsv}
-            disabled={isExporting}
-            className="btn-secondary btn-sm flex items-center gap-1.5"
-            id="export-csv-btn"
-            title="Export CSV spreadsheet"
-          >
-            <Download size={13} />
-            <span>CSV</span>
-          </button>
           <button
             onClick={handleExportPdf}
             className="btn-secondary btn-sm flex items-center gap-1.5"
@@ -113,6 +99,13 @@ const TransactionsPage = () => {
             <FileText size={13} className="text-indigo-400" />
             <span>PDF</span>
           </button>
+          <button
+            type="button"
+            onClick={openTransactionModal}
+            className="workspace-button workspace-button-primary"
+          >
+            <Plus size={15} /> Add transaction
+          </button>
         </div>
       </div>
 
@@ -120,6 +113,7 @@ const TransactionsPage = () => {
         <RequestError message={transactionsError} onRetry={fetchTransactions} isLoading={isLoadingTransactions} />
       )}
 
+      <section className="transactions-panel">
       <div className="transaction-summary">
         <div className="summary-item">
           <div className="summary-label">Transactions shown</div>
@@ -142,7 +136,7 @@ const TransactionsPage = () => {
       </div>
 
       {/* Search, Filter Pills & Sort Bar */}
-      <div className="cyber-card p-4 space-y-4">
+      <div className="cyber-card transaction-controls p-4 space-y-4">
         <div className="flex flex-col md:flex-row gap-3">
           {/* Search Box */}
           <div className="relative flex-1">
@@ -214,7 +208,7 @@ const TransactionsPage = () => {
 
         {/* Collapsible Advanced Filters Drawer */}
         {showFilters && (
-          <div className="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 animate-fadeInUp">
+          <div className="transaction-advanced-filters pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 animate-fadeInUp">
             <div>
               <label className="form-label text-[11px]">Category</label>
               <select
@@ -261,12 +255,27 @@ const TransactionsPage = () => {
                 )}
               </div>
             </div>
+
+            <div className="transaction-sort-drawer">
+              <label className="form-label text-[11px]" htmlFor="transaction-sort-drawer">Sort by</label>
+              <select
+                id="transaction-sort-drawer"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="form-select text-xs py-2 mt-1"
+              >
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+                <option value="amount-desc">Amount: High → Low</option>
+                <option value="amount-asc">Amount: Low → High</option>
+              </select>
+            </div>
           </div>
         )}
       </div>
 
       {/* Transactions List */}
-      <div className="cyber-card">
+      <div className="cyber-card transaction-list">
         {isLoadingTransactions ? (
           <div className="space-y-3 p-4">
             {[1, 2, 3, 4, 5].map((i) => (
@@ -276,7 +285,7 @@ const TransactionsPage = () => {
         ) : processedTransactions.length > 0 ? (
           <div className="divide-y divide-white/5">
             {processedTransactions.map((t) => (
-              <TransactionItem key={t.id} transaction={t} />
+              <TransactionItem key={t.id} transaction={t} variant="ledger" />
             ))}
           </div>
         ) : (
@@ -301,6 +310,7 @@ const TransactionsPage = () => {
           </div>
         )}
       </div>
+      </section>
 
     </div>
   );

@@ -6,7 +6,7 @@ import { getCategoryByLabel, formatCurrency, formatRelativeDate, formatDate } fr
 import TransactionModal from './TransactionModal';
 import toast from 'react-hot-toast';
 
-const TransactionItem = ({ transaction }) => {
+const TransactionItem = ({ transaction, variant = 'default' }) => {
   const [editOpen, setEditOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { deleteTransaction, fetchDashboard, fetchTransactions } = useTransactionStore();
@@ -30,6 +30,113 @@ const TransactionItem = ({ transaction }) => {
       setDeleting(false);
     }
   };
+
+  if (variant === 'compact') {
+    const activityDate = transaction.date
+      ? new Date(`${transaction.date}T00:00:00`).toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+        })
+      : '';
+
+    return (
+      <>
+        <div
+          onClick={() => setEditOpen(true)}
+          className="activity-item"
+          title="Edit transaction"
+        >
+          <div className="activity-item-main">
+            <span
+              className="activity-item-icon"
+              style={{ backgroundColor: `${cat.color}18`, borderColor: `${cat.color}35` }}
+            >
+              {cat.icon}
+            </span>
+            <span className="activity-item-copy">
+              <span className="activity-item-title">{transaction.description || transaction.category}</span>
+              <span className="activity-item-meta">{cat.label} · {activityDate}</span>
+            </span>
+          </div>
+          <span className={`activity-item-amount ${isIncome ? 'income' : ''}`}>
+            {isIncome ? '+' : '−'}{formatCurrency(transaction.amount, currency)}
+          </span>
+        </div>
+        <TransactionModal
+          isOpen={editOpen}
+          onClose={() => setEditOpen(false)}
+          onSuccess={() => {
+            fetchDashboard();
+            fetchTransactions();
+          }}
+          editTransaction={transaction}
+        />
+      </>
+    );
+  }
+
+  if (variant === 'ledger') {
+    const activityDate = transaction.date
+      ? new Date(`${transaction.date}T00:00:00`).toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+        })
+      : '';
+    const initial = (transaction.description || transaction.category || '?').trim().charAt(0).toUpperCase();
+
+    return (
+      <>
+        <div
+          onClick={() => setEditOpen(true)}
+          className="transaction-item transaction-ledger-item group"
+        >
+          <div className="transaction-ledger-main">
+            <span className="transaction-ledger-icon">{initial}</span>
+            <span className="transaction-ledger-copy">
+              <span className="transaction-ledger-title">{transaction.description || transaction.category}</span>
+              <span className="transaction-ledger-meta">{cat.label} · {activityDate}</span>
+            </span>
+          </div>
+          <div className="transaction-ledger-actions">
+            <span className={`transaction-ledger-amount ${isIncome ? 'income' : ''}`}>
+              {isIncome ? '+' : '−'}{formatCurrency(transaction.amount, currency)}
+            </span>
+            <span className="transaction-ledger-buttons">
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setEditOpen(true);
+                }}
+                aria-label="Edit transaction"
+                title="Edit transaction"
+              >
+                <Pencil size={12} />
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                aria-label="Delete transaction"
+                title="Delete transaction"
+              >
+                {deleting ? <span className="spinner w-3 h-3" /> : <Trash2 size={12} />}
+              </button>
+            </span>
+          </div>
+        </div>
+        <TransactionModal
+          isOpen={editOpen}
+          onClose={() => setEditOpen(false)}
+          onSuccess={() => {
+            fetchDashboard();
+            fetchTransactions();
+          }}
+          editTransaction={transaction}
+        />
+      </>
+    );
+  }
 
   return (
     <>

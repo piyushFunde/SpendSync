@@ -203,7 +203,12 @@ const saveLocalDemoTransactions = (list) => {
   localStorage.setItem('spendsync_transactions', JSON.stringify(list));
 };
 
-const isDemoMode = () => useAuthStore.getState().user?.isDemo === true;
+const isFallbackNeeded = (err) => {
+  const user = useAuthStore.getState().user;
+  if (!user || user.isDemo || user.isLocalVault) return true;
+  if (!err?.response || [500, 502, 503, 504].includes(err.response.status)) return true;
+  return false;
+};
 
 const getRequestErrorMessage = (err, fallback) => {
   if (err?.response?.data?.message) return err.response.data.message;
@@ -239,21 +244,24 @@ const useTransactionStore = create((set, get) => ({
     });
   },
 
-  fetchTransactions: async () => {
+  fetchTransactions: async ({ ignoreFilters = false } = {}) => {
     set({ isLoadingTransactions: true, transactionsError: null });
     const { filters } = get();
+    const activeFilters = ignoreFilters
+      ? { type: '', category: '', startDate: '', endDate: '' }
+      : filters;
 
     try {
       const params = {};
-      if (filters.type) params.type = filters.type;
-      if (filters.category) params.category = filters.category;
-      if (filters.startDate) params.startDate = filters.startDate;
-      if (filters.endDate) params.endDate = filters.endDate;
+      if (activeFilters.type) params.type = activeFilters.type;
+      if (activeFilters.category) params.category = activeFilters.category;
+      if (activeFilters.startDate) params.startDate = activeFilters.startDate;
+      if (activeFilters.endDate) params.endDate = activeFilters.endDate;
 
       const { data } = await transactionsApi.getAll(params);
       set({ transactions: data, isLoadingTransactions: false });
     } catch (err) {
-      if (!isDemoMode()) {
+      if (!isFallbackNeeded(err)) {
         set({
           isLoadingTransactions: false,
           transactionsError: getRequestErrorMessage(err, 'Could not load transactions.'),
@@ -263,17 +271,17 @@ const useTransactionStore = create((set, get) => ({
 
       let localList = getLocalDemoTransactions();
 
-      if (filters.type) {
-        localList = localList.filter((t) => t.type === filters.type);
+      if (activeFilters.type) {
+        localList = localList.filter((t) => t.type === activeFilters.type);
       }
-      if (filters.category) {
-        localList = localList.filter((t) => t.category === filters.category);
+      if (activeFilters.category) {
+        localList = localList.filter((t) => t.category === activeFilters.category);
       }
-      if (filters.startDate) {
-        localList = localList.filter((t) => t.date >= filters.startDate);
+      if (activeFilters.startDate) {
+        localList = localList.filter((t) => t.date >= activeFilters.startDate);
       }
-      if (filters.endDate) {
-        localList = localList.filter((t) => t.date <= filters.endDate);
+      if (activeFilters.endDate) {
+        localList = localList.filter((t) => t.date <= activeFilters.endDate);
       }
 
       set({ transactions: localList, isLoadingTransactions: false });
@@ -286,7 +294,7 @@ const useTransactionStore = create((set, get) => ({
       const { data } = await transactionsApi.getDashboard();
       set({ dashboard: data, isLoadingDashboard: false });
     } catch (err) {
-      if (!isDemoMode()) {
+      if (!isFallbackNeeded(err)) {
         set({
           dashboard: null,
           isLoadingDashboard: false,
@@ -310,7 +318,7 @@ const useTransactionStore = create((set, get) => ({
       }));
       return { success: true, data };
     } catch (err) {
-      if (!isDemoMode()) {
+      if (!isFallbackNeeded(err)) {
         const error = getRequestErrorMessage(err, 'Could not save this transaction.');
         return { success: false, error };
       }
@@ -340,7 +348,7 @@ const useTransactionStore = create((set, get) => ({
       }));
       return { success: true, data };
     } catch (err) {
-      if (!isDemoMode()) {
+      if (!isFallbackNeeded(err)) {
         const error = getRequestErrorMessage(err, 'Could not update this transaction.');
         return { success: false, error };
       }
@@ -369,7 +377,7 @@ const useTransactionStore = create((set, get) => ({
       }));
       return { success: true };
     } catch (err) {
-      if (!isDemoMode()) {
+      if (!isFallbackNeeded(err)) {
         const error = getRequestErrorMessage(err, 'Could not delete this transaction.');
         return { success: false, error };
       }
@@ -385,14 +393,11 @@ const useTransactionStore = create((set, get) => ({
     }
   },
 
-  exportCsv: async () => {
+  exportCsv: async ({ type = '', sourceTransactions } = {}) => {
     set({ isExporting: true });
     try {
-      const { filters } = get();
       const params = {};
-      if (filters.type) params.type = filters.type;
-      if (filters.startDate) params.startDate = filters.startDate;
-      if (filters.endDate) params.endDate = filters.endDate;
+      if (type) params.type = type;
 
       const response = await transactionsApi.exportCsv(params);
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -412,15 +417,16 @@ const useTransactionStore = create((set, get) => ({
       }
 
       try {
-        const headers = ['ID', 'Date', 'Type', 'Category', 'Amount', 'Description', 'Notes'];
-        const rows = transactions.map((t) => [
-          `"${t.id}"`,
-          `"${t.date}"`,
-          `"${t.type}"`,
-          `"${t.category}"`,
-          t.amount,
-          `"${(t.description || '').replace(/"/g, '""')}"`,
-          `"${(t.notes || '').replace(/"/g, '""')}"`,
+        const exportTransactions = (sourceTransactions ?? transactions)
+          .filter((transaction) => !type || transaction.type === type);
+        const quote = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+        const headers = ['date', 'description', 'category', 'type', 'amount'];
+        const rows = exportTransactions.map((transaction) => [
+          quote(transaction.date),
+          quote(transaction.description || transaction.category),
+          quote(transaction.category),
+          quote(String(transaction.type || 'EXPENSE').toLowerCase()),
+          Number(transaction.amount || 0).toFixed(2),
         ]);
 
         const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
@@ -428,7 +434,7 @@ const useTransactionStore = create((set, get) => ({
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `SpendSync-Export-${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute('download', `transactions-${new Date().toISOString().split('T')[0]}.csv`);
         document.body.appendChild(link);
         link.click();
         link.remove();
