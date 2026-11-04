@@ -146,7 +146,8 @@ const TransactionsPage = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search description, category, amount..."
-              className="form-input pl-10 pr-9 py-2.5 text-sm"
+              className="form-input pr-9 py-2.5 text-sm"
+              style={{ paddingLeft: '36px' }}
               id="search-transactions"
             />
             {search && (
@@ -290,7 +291,9 @@ const TransactionsPage = () => {
           </div>
         ) : (
           <div className="py-16 text-center text-slate-500">
-            <Search size={36} className="mx-auto mb-3 text-slate-600" />
+            <div className="mx-auto mb-4 w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+              <Search size={22} className="text-slate-500" />
+            </div>
             <p className="text-base font-semibold text-slate-300">No transactions found</p>
             <p className="text-xs text-slate-500 mt-1">
               Try different search terms or adjust your filters.

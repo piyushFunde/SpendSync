@@ -22,7 +22,7 @@ app:
     secret: ${JWT_SECRET:SpendSyncDevSecretKeyMustBeAtLeast32CharactersLong!}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}  # 24 hours
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://*.vercel.app}
 
 logging:
   level:
