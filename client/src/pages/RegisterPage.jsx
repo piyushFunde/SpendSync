@@ -65,7 +65,7 @@ const RegisterPage = () => {
                 autoComplete="name"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Alex Morgan"
+                placeholder="Enter your name"
                 className={`form-input text-sm ${errors.name ? 'error' : ''}`}
               />
               {errors.name && <p className="form-error">{errors.name}</p>}
