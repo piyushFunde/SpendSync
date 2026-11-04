@@ -53,7 +53,7 @@ const Sidebar = () => {
             setMobileOpen(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="sidebar-brand-link flex items-center gap-3 px-5 py-6 group cursor-pointer transition-all select-none"
+          className="sidebar-brand-link mb-4 flex items-center gap-3 px-5 py-6 group cursor-pointer transition-all select-none"
           title="Return to Overview"
         >
           <div className="sidebar-brand-icon w-8 h-8 rounded-lg bg-[#141417] border border-[#27272a] flex items-center justify-center text-white group-hover:border-[#3f3f46] transition-colors shadow-sm">
@@ -68,7 +68,7 @@ const Sidebar = () => {
 
         {/* Navigation */}
         <nav className="sidebar-nav px-3 space-y-1 mt-1" aria-label="Main menu">
-          <div className="text-[10px] font-bold text-[#71717a] uppercase tracking-widest px-3 mb-2 font-mono">
+          <div className="sidebar-nav-label text-[10px] font-bold text-[#71717a] uppercase tracking-widest px-3 mb-4 font-mono text-center">
             MAIN MENU
           </div>
           {navItems.map(({ to, icon: Icon, label }) => (
@@ -79,7 +79,7 @@ const Sidebar = () => {
               className={({ isActive }) => `nav-item group relative ${isActive ? 'active' : ''}`}
             >
               <Icon size={18} className="shrink-0 transition-transform group-hover:scale-105" />
-              <span className="flex-1">{label}</span>
+              <span className="sidebar-nav-item-label">{label}</span>
             </NavLink>
           ))}
         </nav>

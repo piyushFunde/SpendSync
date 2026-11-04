@@ -708,6 +708,19 @@ code, .font-mono {
   transition: all 0.15s ease;
 }
 
+.sidebar-nav .nav-item {
+  position: relative;
+}
+
+.sidebar-nav .nav-item > span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
 .app-sidebar .nav-item:hover {
   color: #f4f4f5;
   background: #141416;
