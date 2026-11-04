@@ -200,7 +200,7 @@ const TransactionDialog = ({ onClose, onSuccess, editTransaction = null }) => {
             <button type="button" onClick={onClose}>Cancel</button>
             <button type="submit" disabled={isSubmitting}>
               {isSubmitting
-                ? 'Saving…'
+                ? 'Savingâ€¦'
                 : editTransaction
                   ? 'Save changes'
                   : 'Save transaction'}
