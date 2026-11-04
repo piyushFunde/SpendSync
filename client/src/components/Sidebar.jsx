@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
-  LayoutGrid, AlignLeft, BarChart2, Download,
+  LayoutGrid, BarChart2, Download,
   Menu, X, SquareTerminal
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutGrid, label: 'Overview' },
-  { to: '/transactions', icon: AlignLeft, label: 'Transactions' },
+  { to: '/transactions', icon: Menu, label: 'Transactions' },
   { to: '/categories', icon: BarChart2, label: 'Categories' },
   { to: '/export', icon: Download, label: 'Export' },
 ];
@@ -32,8 +32,11 @@ const Sidebar = () => {
         {/* Brand Header - Clicking SpendSync returns to Overview */}
         <Link
           to="/dashboard"
-          onClick={() => setMobileOpen(false)}
-          className="flex items-center gap-3 px-5 py-6 group cursor-pointer transition-all"
+          onClick={() => {
+            setMobileOpen(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="flex items-center gap-3 px-5 py-6 group cursor-pointer transition-all select-none"
           title="Return to Overview"
         >
           <div className="w-8 h-8 rounded-lg bg-[#141417] border border-[#27272a] flex items-center justify-center text-white group-hover:border-[#3f3f46] transition-colors shadow-sm">
