@@ -691,27 +691,35 @@ code, .font-mono {
   box-shadow: none;
 }
 
+.app-sidebar {
+  background: #09090b;
+  border-right: 1px solid #18181b;
+}
+
 .app-sidebar .nav-item {
-  min-height: 40px;
-  padding: 0 12px;
+  min-height: 42px;
+  padding: 0 14px;
   gap: 12px;
   color: #a1a1aa;
   border: 1px solid transparent;
-  border-radius: 10px;
-  font-size: 13px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.15s ease;
 }
 
 .app-sidebar .nav-item:hover {
   color: #f4f4f5;
-  background: #141414;
-  border-color: #202020;
+  background: #141416;
+  border-color: #202024;
 }
 
 .app-sidebar .nav-item.active {
-  color: #fff;
-  background: #171717;
-  border-color: #242424;
-  box-shadow: none;
+  color: #ffffff;
+  background: #18181b;
+  border-color: #27272a;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .app-sidebar .nav-item svg {
@@ -719,7 +727,7 @@ code, .font-mono {
 }
 
 .app-sidebar .nav-item.active svg {
-  color: #f4f4f5;
+  color: #ffffff;
 }
 
 .app-sidebar .sidebar-note {
