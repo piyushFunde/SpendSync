@@ -1,4 +1,4 @@
-import { ArrowDownLeft, Shield, Wallet } from 'lucide-react';
+import { BarChart3, Download, Shield, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Reveal from './Reveal';
 
@@ -32,50 +32,24 @@ const AuthLayout = ({ variant, title, description, children, footer }) => {
           </Reveal>
           <Reveal as="p" className="auth-promo-description" delay={180}>
             {isRegister
-              ? 'Track spending, understand your habits, and keep your budget in view, all in one simple place.'
-              : 'Pick up where you left off: your balance, your budget and your recent activity.'}
+              ? 'Track spending, understand your habits, and keep your financial activity organized.'
+              : 'Sign in to review the financial activity you have recorded.'}
           </Reveal>
 
-          {isRegister ? (
-            <Reveal className="auth-preview-card auth-metrics-preview" delay={280}>
-              <div className="auth-preview-heading"><span>YOUR FINANCES</span><small>Example view</small></div>
-              <div className="auth-metrics-grid">
-                <article>
-                  <span>Total balance</span>
-                  <strong>$27,169.85</strong>
-                </article>
-                <article>
-                  <span>Savings goal</span>
-                  <strong>$8,450 <small>/ $12,000</small></strong>
-                  <i className="auth-progress auth-progress-teal"><b /></i>
-                </article>
-                <article>
-                  <span>Monthly budget</span>
-                  <strong>$2,340 <small>of $3,000</small></strong>
-                  <i className="auth-progress auth-progress-amber"><b /></i>
-                </article>
-              </div>
-            </Reveal>
-          ) : (
-            <Reveal className="auth-preview-card auth-activity-preview" delay={280}>
-              <div className="auth-preview-heading"><span>RECENT ACTIVITY</span><small>Illustrative data</small></div>
-              <div className="auth-activity-row">
-                <span className="auth-activity-icon auth-activity-food">F</span>
-                <span><strong>Groceries</strong><small>Food &amp; dining · Today</small></span>
-                <b>−$64.20</b>
-              </div>
-              <div className="auth-activity-row">
-                <span className="auth-activity-icon auth-activity-income">S</span>
-                <span><strong>Monthly salary</strong><small>Income · Oct 28</small></span>
-                <b className="auth-positive">+$3,800.00</b>
-              </div>
-              <div className="auth-preview-balance">
-                <span><ArrowDownLeft size={13} /> Monthly overview</span>
-                <strong>$2,340.00</strong>
-                <small>Based on your recorded activity</small>
-              </div>
-            </Reveal>
-          )}
+          <Reveal className="auth-preview-card auth-benefits-preview" delay={280}>
+            <div className="auth-benefit-row">
+              <span className="auth-activity-icon auth-activity-income"><Wallet size={15} /></span>
+              <span><strong>Record income and expenses</strong><small>Keep your financial activity organized.</small></span>
+            </div>
+            <div className="auth-benefit-row">
+              <span className="auth-activity-icon auth-activity-food"><BarChart3 size={15} /></span>
+              <span><strong>Review your activity</strong><small>Explore your recorded transactions and trends.</small></span>
+            </div>
+            <div className="auth-benefit-row">
+              <span className="auth-activity-icon auth-activity-income"><Download size={15} /></span>
+              <span><strong>Export your records</strong><small>Take your transaction history with you.</small></span>
+            </div>
+          </Reveal>
         </div>
       </aside>
     </main>

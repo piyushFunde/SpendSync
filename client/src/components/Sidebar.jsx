@@ -90,14 +90,14 @@ const Sidebar = () => {
         <div className="sidebar-account p-3.5 rounded-2xl bg-[#111114] border border-[#222225] shadow-sm">
           <div className="sidebar-account-profile flex items-center gap-3 min-w-0">
             <div className="sidebar-account-avatar w-9 h-9 rounded-full bg-[#0a2e26] border border-[#10b981]/30 text-[#10b981] font-bold text-xs flex items-center justify-center font-mono shrink-0">
-              {getInitials(user?.name) || 'JD'}
+              {getInitials(user?.name)}
             </div>
             <div className="sidebar-account-copy flex-1 min-w-0">
               <div className="sidebar-account-name text-xs font-bold text-white leading-tight">
                 Signed In
               </div>
               <div className="sidebar-account-email text-[11px] text-[#71717a] truncate leading-tight mt-0.5">
-                {user?.email || 'you@example.com'}
+                {user?.email}
               </div>
             </div>
           </div>

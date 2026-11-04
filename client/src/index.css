@@ -3886,6 +3886,17 @@ body {
   color: #858e88;
 }
 
+.dashboard-empty-state {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  color: #89938b;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
 .dashboard-select {
   gap: 5px;
   padding: 6px 7px;
@@ -4800,6 +4811,36 @@ body {
   gap: 9px;
   padding: 10px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.auth-benefit-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.auth-benefit-row:last-child {
+  border-bottom: 0;
+}
+
+.auth-benefit-row > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.auth-benefit-row strong {
+  color: #e8ece8;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.auth-benefit-row small {
+  color: #858f88;
+  font-size: 9px;
 }
 
 .auth-activity-icon {
