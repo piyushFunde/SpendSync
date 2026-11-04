@@ -2973,6 +2973,7 @@ body {
 .landing-section {
   padding: 76px 0 92px;
   border-top: 1px solid rgba(148, 163, 184, 0.1);
+  scroll-margin-top: 24px;
 }
 
 .landing-section-heading {
@@ -4107,8 +4108,109 @@ body {
 
 .landing-how,
 .landing-final-cta {
+  scroll-margin-top: 24px;
   border-color: rgba(255, 255, 255, 0.09);
   background: #101412;
+}
+
+.landing-budget-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.landing-budget-card {
+  min-width: 0;
+  min-height: 170px;
+  padding: 23px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  background: #101412;
+}
+
+.landing-budget-card-label {
+  color: #858e88;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.landing-budget-card > strong {
+  display: block;
+  margin-top: 18px;
+  color: #edf1ed;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+
+.landing-budget-card > strong small {
+  color: #9ba49d;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.landing-budget-progress {
+  height: 6px;
+  margin-top: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #282f2a;
+}
+
+.landing-budget-progress span {
+  display: block;
+  width: 78%;
+  height: 100%;
+  border-radius: inherit;
+  background: #56c8a4;
+}
+
+.landing-budget-card h3 {
+  margin-top: 18px;
+  color: #edf1ed;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.landing-budget-card p {
+  margin-top: 9px;
+  color: #a5aaa6;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.landing-budget-section,
+.landing-faq-section {
+  scroll-margin-top: 24px;
+}
+
+.landing-faq-list {
+  max-width: 780px;
+  display: grid;
+  gap: 10px;
+  margin: 0 auto;
+}
+
+.landing-faq-list details {
+  padding: 17px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  background: #101412;
+}
+
+.landing-faq-list summary {
+  color: #e8ece8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.landing-faq-list details p {
+  margin-top: 11px;
+  color: #a5aaa6;
+  font-size: 12px;
+  line-height: 1.7;
 }
 
 .landing-footer {
@@ -4146,6 +4248,10 @@ body {
 
   .dashboard-content-grid {
     grid-template-columns: minmax(0, 1.3fr) minmax(185px, 0.9fr);
+  }
+
+  .landing-budget-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -4270,12 +4376,6 @@ body {
 
   .landing-hero h1 {
     font-size: clamp(28px, 9.2vw, 43px);
-  }
-
-  .landing-nav a:nth-child(1),
-  .landing-nav a:nth-child(3),
-  .landing-nav a:nth-child(5) {
-    display: none;
   }
 
   .landing-hero-copy > p {

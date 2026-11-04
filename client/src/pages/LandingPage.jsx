@@ -48,11 +48,11 @@ const LandingPage = () => (
         <span>SpendSync</span>
       </Link>
       <nav className="landing-nav" aria-label="Main navigation">
-        <a href="#">Home</a>
+        <a href="#home">Home</a>
         <a href="#how-it-works">How it works</a>
-        <a href="#features">Budgets</a>
+        <a href="#budgets">Budgets</a>
         <a href="#features">Features</a>
-        <a href="#how-it-works">FAQs</a>
+        <a href="#faqs">FAQs</a>
       </nav>
       <div className="landing-actions">
         <Link to="/login" className="landing-login">Sign in</Link>
@@ -63,7 +63,7 @@ const LandingPage = () => (
     </header>
 
     <main>
-      <section className="landing-hero">
+      <section id="home" className="landing-hero">
         <div className="landing-hero-copy">
           <Reveal as="h1" className="landing-headline">
             Spend smarter with<br /><span>your money in focus.</span>
@@ -233,6 +233,60 @@ const LandingPage = () => (
           <div><span>01</span><p><strong>Create your account</strong><br />Set up your profile and preferred currency.</p></div>
           <div><span>02</span><p><strong>Add your transactions</strong><br />Record income and expenses as they happen.</p></div>
           <div><span>03</span><p><strong>Review your overview</strong><br />Use your recorded activity to spot patterns.</p></div>
+        </div>
+      </Reveal>
+
+      <Reveal as="section" id="budgets" className="landing-section landing-budget-section">
+        <div className="landing-section-heading">
+          <span className="landing-section-kicker">Make a plan that works for you</span>
+          <h2>Budgets that keep you on track.</h2>
+          <p>Set a monthly spending target, keep an eye on your progress, and adjust as life changes.</p>
+        </div>
+        <div className="landing-budget-grid">
+          <article className="landing-budget-card">
+            <span className="landing-budget-card-label">MONTHLY SPENDING</span>
+            <strong>$2,340 <small>of $3,000</small></strong>
+            <div className="landing-budget-progress" aria-label="78 percent of monthly budget used">
+              <span />
+            </div>
+            <p>$660 left in your plan this month</p>
+          </article>
+          <article className="landing-budget-card">
+            <span className="landing-budget-card-label">A CLEARER PICTURE</span>
+            <h3>See where it goes</h3>
+            <p>Review your transactions by category to understand what is driving your spending.</p>
+          </article>
+          <article className="landing-budget-card">
+            <span className="landing-budget-card-label">FLEXIBLE BY DESIGN</span>
+            <h3>Adjust as you go</h3>
+            <p>Your budget is a helpful guide. Update your targets whenever your priorities change.</p>
+          </article>
+        </div>
+      </Reveal>
+
+      <Reveal as="section" id="faqs" className="landing-section landing-faq-section">
+        <div className="landing-section-heading">
+          <span className="landing-section-kicker">Frequently asked questions</span>
+          <h2>Good to know.</h2>
+          <p>A few quick answers to help you get started with SpendSync.</p>
+        </div>
+        <div className="landing-faq-list">
+          <details>
+            <summary>What can I track with SpendSync?</summary>
+            <p>Record income and expenses, organize transactions by category, and review your activity in one place.</p>
+          </details>
+          <details>
+            <summary>Can I review my spending over time?</summary>
+            <p>Yes. Your dashboard and analytics help you explore transaction totals and category trends.</p>
+          </details>
+          <details>
+            <summary>Can I export my transaction history?</summary>
+            <p>Yes. Export your records as a CSV or create a PDF statement when you need a copy.</p>
+          </details>
+          <details>
+            <summary>How do I get started?</summary>
+            <p>Create an account, add your transactions, and visit your overview to see your finances take shape.</p>
+          </details>
         </div>
       </Reveal>
 
