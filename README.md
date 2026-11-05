@@ -1,8 +1,8 @@
-# 💸 SpendSync
+# SpendSync
 
-> **A full-stack personal finance tracker** — track income & expenses, visualise spending trends, export reports, and stay in control of your money.
+ **A full-stack personal finance tracker** — track income & expenses, visualise spending trends, export reports, and stay in control of your money.
 
-🔗 **Live Demo:** [https://spend-sync-gamma.vercel.app/](https://spend-sync-gamma.vercel.app/)
+**Live Demo:** [https://spend-sync-gamma.vercel.app/](https://spend-sync-gamma.vercel.app/)
 
 ---
 
