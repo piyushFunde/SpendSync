@@ -58,7 +58,7 @@ User → React Page → Zustand Store → Axios Client
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 | Technology | Version | Purpose |
@@ -214,7 +214,7 @@ SpendSync/
 
 ---
 
-## ⚙️ Environment Variables
+##  Environment Variables
 
 ### Client (`client/.env`)
 ```env
