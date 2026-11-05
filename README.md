@@ -26,8 +26,9 @@
 
 ## Architecture
 
+```mermaid
+
 flowchart TD
-```
 
 subgraph group_client["Browser application"]
   node_routes["App routes<br/>[App.jsx]"]
