@@ -6,33 +6,25 @@
 
 ---
 
-## 📸 Screenshots
-
-| Landing Page | Dashboard | Transactions |
-|---|---|---|
-| Dark, animated hero with feature highlights | Monthly summary cards + bar chart | Search, filter, sort ledger with live stats |
-
----
-
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---|---|
-| 🔐 **JWT Authentication** | Register / Login with secure bcrypt-hashed passwords and stateless JWT tokens |
-| 📊 **Dashboard** | Monthly income vs expense bar chart, net balance, category breakdown (Recharts) |
-| 💳 **Transactions** | Add, edit, delete income & expense records with category, date, notes, and amount |
-| 🔍 **Search & Filter** | Real-time search by description / category / amount; filter by type, category, date range |
-| 📂 **Categories** | Pre-built income & expense categories with emoji icons and spending breakdown |
-| 📄 **PDF Export** | Download a formatted financial statement PDF via jsPDF + jspdf-autotable |
-| 📤 **CSV Export** | Export filtered transactions as a CSV file |
-| 🌐 **Multi-currency** | Per-user currency preference stored in profile |
-| 📧 **Email Reports** | Backend email report service (Spring Mail) |
-| 🛡️ **Offline Fallback** | When the backend is unreachable, auth and transactions fall back to localStorage vault |
-| 📱 **Responsive UI** | Fully responsive dark-theme UI — works on mobile, tablet, and desktop |
+|**JWT Authentication** | Register / Login with secure bcrypt-hashed passwords and stateless JWT tokens |
+|**Dashboard** | Monthly income vs expense bar chart, net balance, category breakdown (Recharts) |
+|**Transactions** | Add, edit, delete income & expense records with category, date, notes, and amount |
+|**Search & Filter** | Real-time search by description / category / amount; filter by type, category, date range |
+|**Categories** | Pre-built income & expense categories with emoji icons and spending breakdown |
+|**PDF Export** | Download a formatted financial statement PDF via jsPDF + jspdf-autotable |
+|**CSV Export** | Export filtered transactions as a CSV file |
+|**Multi-currency** | Per-user currency preference stored in profile |
+|**Email Reports** | Backend email report service (Spring Mail) |
+|**Offline Fallback** | When the backend is unreachable, auth and transactions fall back to localStorage vault |
+|**Responsive UI** | Fully responsive dark-theme UI — works on mobile, tablet, and desktop |
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -109,7 +101,7 @@ User → React Page → Zustand Store → Axios Client
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 SpendSync/
@@ -202,23 +194,23 @@ SpendSync/
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Auth — `/api/auth`
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| `POST` | `/api/auth/register` | Create a new account | ❌ Public |
-| `POST` | `/api/auth/login` | Sign in, returns JWT token | ❌ Public |
+| `POST` | `/api/auth/register` | Create a new account | Public |
+| `POST` | `/api/auth/login` | Sign in, returns JWT token | Public |
 
 ### Transactions — `/api/transactions`
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| `GET` | `/api/transactions` | List all transactions (with optional filters) | ✅ JWT |
-| `POST` | `/api/transactions` | Create a new transaction | ✅ JWT |
-| `PUT` | `/api/transactions/{id}` | Update a transaction | ✅ JWT |
-| `DELETE` | `/api/transactions/{id}` | Delete a transaction | ✅ JWT |
-| `GET` | `/api/transactions/dashboard` | Monthly summary + KPI data | ✅ JWT |
-| `GET` | `/api/transactions/export/csv` | Download transactions as CSV | ✅ JWT |
+| `GET` | `/api/transactions` | List all transactions (with optional filters) | JWT |
+| `POST` | `/api/transactions` | Create a new transaction |  JWT |
+| `PUT` | `/api/transactions/{id}` | Update a transaction |  JWT |
+| `DELETE` | `/api/transactions/{id}` | Delete a transaction |  JWT |
+| `GET` | `/api/transactions/dashboard` | Monthly summary + KPI data |  JWT |
+| `GET` | `/api/transactions/export/csv` | Download transactions as CSV |  JWT |
 
 ---
 
@@ -243,72 +235,7 @@ MAIL_PASSWORD=your-app-password
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+
-- Java 17+
-- Maven 3.8+
-- MongoDB Atlas account (free tier)
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/your-username/SpendSync.git
-cd SpendSync
-```
-
-### 2. Backend Setup
-```bash
-cd server
-# Copy and fill in your secrets
-cp ../.env.example .env
-
-# Run with Maven
-mvn spring-boot:run
-# API available at http://localhost:8080
-```
-
-### 3. Frontend Setup
-```bash
-cd client
-npm install
-
-# Create local env file
-echo "VITE_API_BASE_URL=http://localhost:8080" > .env
-
-npm run dev
-# App available at http://localhost:5173
-```
-
-### 4. Docker (Full Stack)
-```bash
-# From project root
-docker-compose up --build
-# Frontend → http://localhost:80
-# Backend  → http://localhost:8080
-```
-
----
-
-## ☁️ Deployment
-
-### Backend → Render
-1. Push code to GitHub
-2. Create a new **Web Service** on [Render](https://render.com)
-3. Set **Runtime** → Docker, **Root Directory** → `server`
-4. Add environment variables in the Render dashboard:
-   - `MONGODB_URI`, `JWT_SECRET`, `ALLOWED_ORIGINS`, etc.
-5. MongoDB Atlas → **Network Access** → add `0.0.0.0/0` (Render uses dynamic IPs)
-
-### Frontend → Vercel
-1. Create a new project on [Vercel](https://vercel.com)
-2. Set **Root Directory** → `client`, **Framework** → Vite
-3. Add env var: `VITE_API_BASE_URL=https://spendsync-9si7.onrender.com`
-4. Deploy — Vercel handles the SPA rewrite via `vercel.json`
-
----
-
-## 🧪 Running Tests
+##  Running Tests
 
 ```bash
 # Frontend unit tests (Vitest)
@@ -322,7 +249,7 @@ mvn test
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repo
 2. Create a feature branch: `git checkout -b feature/your-feature`
@@ -332,12 +259,3 @@ mvn test
 
 ---
 
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
-
----
-
-<div align="center">
-  Built with ❤️ using React, Spring Boot & MongoDB
-</div>
