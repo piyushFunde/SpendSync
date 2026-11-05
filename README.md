@@ -2,7 +2,7 @@
 
 > **A full-stack personal finance tracker** — track income & expenses, visualise spending trends, export reports, and stay in control of your money.
 
-🔗 **Live Demo:** [https://spendsync-9si7.onrender.com](https://spendsync-9si7.onrender.com)
+🔗 **Live Demo:** [https://spend-sync-gamma.vercel.app/](https://spend-sync-gamma.vercel.app/)
 
 ---
 
