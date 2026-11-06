@@ -1,12 +1,14 @@
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/spendsync}
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:your-email@gmail.com}
-    password: ${MAIL_PASSWORD:your-app-password}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -22,7 +24,7 @@ app:
     secret: ${JWT_SECRET:SpendSyncDevSecretKeyMustBeAtLeast32CharactersLong!}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}  # 24 hours
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://*.vercel.app}
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://*.vercel.app,https://*.onrender.com}
 
 logging:
   level:
